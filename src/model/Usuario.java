@@ -11,7 +11,7 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(Long id, String nome, String email, String senha, String tipoUsuario) {
+    public Usuario(int id, String nome, String email, String senha, String tipoUsuario) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -22,7 +22,7 @@ public class Usuario {
     public int getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

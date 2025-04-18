@@ -36,7 +36,7 @@ public class UsuarioDAO {
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Usuario u = new Usuario(
-                        rs.getLong("id"),
+                        rs.getInt("id"),
                         rs.getString("nome"),
                         rs.getString("idade"),
                         rs.getString("cpf"),
