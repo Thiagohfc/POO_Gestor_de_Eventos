@@ -1,0 +1,29 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: eventosdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user123
+    volumes:
+      - ./database/gestor_eventos_script.sql:/docker-entrypoint-initdb.d/gestor_eventos_script.sql
+      - mysql-data:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root123
+
+volumes:
+  mysql-data:
