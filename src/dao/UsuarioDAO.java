@@ -32,6 +32,29 @@ public class UsuarioDAO {
         }
     }
 
+    public Usuario buscarPorId(int id) {
+        try {
+            String sql = "SELECT * FROM usuario WHERE usuario_id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Usuario usuario = new Usuario();
+                usuario.setId(rs.getInt("usuario_id"));
+                usuario.setNome(rs.getString("usuario_nome"));
+                usuario.setIdade(rs.getInt("usuario_idade"));
+                usuario.setCpf(rs.getString("usuario_cpf"));
+                usuario.setEmail(rs.getString("usuario_email"));
+                usuario.setSenha(rs.getString("usuario_senha"));
+                usuario.setTipoUsuario(rs.getString("usuario_tipo"));
+                return usuario;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Usuario> listar() {
         List<Usuario> usuarios = new ArrayList<>();
         try {
