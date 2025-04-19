@@ -16,6 +16,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Usuario objUsuario = new Usuario();
         UsuarioDAO objUsuarioDAO = new UsuarioDAO();
+        EventoDAO objEventoDAO = new EventoDAO();
         Criptografia objCriptografia = new Criptografia();
 
         // === Cadastro de Usuário ===
@@ -34,55 +35,124 @@ public class Main {
         System.out.print("Digite o tipo de usuário: ");
         objUsuario.setTipoUsuario(sc.nextLine());
 
-        // Inserir usuário no banco
         objUsuarioDAO.inserir(objUsuario);
 
-        // Recuperar o último usuário inserido (assumindo que é o último da lista)
+        // Recupera o último usuário inserido
         List<Usuario> usuarios = objUsuarioDAO.listar();
-        Usuario ultimoUsuario = usuarios.get(usuarios.size() - 1);
+        Usuario usuarioLogado = usuarios.get(usuarios.size() - 1);
 
-        // === Cadastro de Evento ===
-        Evento objEvento = new Evento();
-        EventoDAO objEventoDAO = new EventoDAO();
+        int opcao = -1;
+        do {
+            System.out.println("\n=== MENU DE EVENTOS ===");
+            System.out.println("1 - Inserir evento");
+            System.out.println("2 - Editar evento");
+            System.out.println("3 - Excluir evento");
+            System.out.println("4 - Listar eventos");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha uma opção: ");
+            opcao = sc.nextInt();
+            sc.nextLine(); // limpar buffer
 
-        System.out.println("\n=== Cadastro de Evento ===");
-        System.out.print("Título do evento: ");
-        objEvento.setTitulo(sc.nextLine());
-        System.out.print("Descrição do evento: ");
-        objEvento.setDescricao(sc.nextLine());
-        System.out.print("Tipo do evento: ");
-        objEvento.setTipo(sc.nextLine());
-        System.out.print("Data do evento (formato: dd/MM/yyyy): ");
-        try {
-            String dataStr = sc.nextLine();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date data = sdf.parse(dataStr);
-            objEvento.setData(data);
-        } catch (Exception e) {
-            System.out.println("Data inválida! Usando data atual.");
-            objEvento.setData(new Date());
-        }
+            switch (opcao) {
+                case 1: {
+                    Evento evento = new Evento();
+                    System.out.print("Título: ");
+                    evento.setTitulo(sc.nextLine());
+                    System.out.print("Descrição: ");
+                    evento.setDescricao(sc.nextLine());
+                    System.out.print("Tipo: ");
+                    evento.setTipo(sc.nextLine());
+                    System.out.print("Data (dd/MM/yyyy): ");
+                    try {
+                        String dataStr = sc.nextLine();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        Date data = sdf.parse(dataStr);
+                        evento.setData(data);
+                    } catch (Exception e) {
+                        System.out.println("Data inválida! Usando data atual.");
+                        evento.setData(new Date());
+                    }
+                    evento.setUsuario(usuarioLogado);
+                    objEventoDAO.inserir(evento);
+                    System.out.println("Evento inserido com sucesso!");
+                    break;
+                }
 
-        objEvento.setUsuario(ultimoUsuario);
-        objEventoDAO.inserir(objEvento);
+                case 2: {
+                    System.out.print("Digite o ID do evento que deseja editar: ");
+                    int id = sc.nextInt();
+                    sc.nextLine();
 
-        System.out.println("\nEvento cadastrado com sucesso!");
+                    Evento evento = objEventoDAO.buscarPorId(id);
+                    if (evento != null) {
+                        System.out.print("Novo título (anterior: " + evento.getTitulo() + "): ");
+                        evento.setTitulo(sc.nextLine());
+                        System.out.print("Nova descrição (anterior: " + evento.getDescricao() + "): ");
+                        evento.setDescricao(sc.nextLine());
+                        System.out.print("Novo tipo (anterior: " + evento.getTipo() + "): ");
+                        evento.setTipo(sc.nextLine());
+                        System.out.print("Nova data (dd/MM/yyyy): ");
+                        try {
+                            String dataStr = sc.nextLine();
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                            evento.setData(sdf.parse(dataStr));
+                        } catch (Exception e) {
+                            System.out.println("Data inválida! Mantendo a data anterior.");
+                        }
+                        evento.setUsuario(usuarioLogado); // garantir consistência
+                        objEventoDAO.atualizar(evento);
+                        System.out.println("Evento atualizado com sucesso!");
+                    } else {
+                        System.out.println("Evento não encontrado.");
+                    }
+                    break;
+                }
+
+                case 3: {
+                    System.out.print("Digite o ID do evento que deseja excluir: ");
+                    int id = sc.nextInt();
+                    sc.nextLine();
+                    objEventoDAO.excluir(id);
+                    System.out.println("Evento excluído com sucesso!");
+                    break;
+                }
+
+                case 4: {
+                    List<Evento> eventos = objEventoDAO.listar();
+                    if (eventos.isEmpty()) {
+                        System.out.println("Nenhum evento cadastrado.");
+                    } else {
+                        System.out.println("\n=== Lista de Eventos ===");
+                        for (Evento evento : eventos) {
+                            System.out.println("ID: " + evento.getId() +
+                                    ", Título: " + evento.getTitulo() +
+                                    ", Descrição: " + evento.getDescricao() +
+                                    ", Tipo: " + evento.getTipo() +
+                                    ", Data: " + new SimpleDateFormat("dd/MM/yyyy").format(evento.getData()) +
+                                    ", Usuário: " + evento.getUsuario().getNome());
+                        }
+                    }
+                    break;
+                }
+
+                case 0:
+                    System.out.println("Saindo...");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (opcao != 0);
 
         // === Listagem de Usuários ===
         System.out.println("\n=== Lista de Usuários ===");
         for (Usuario usuario : usuarios) {
-            System.out.println("ID: " + usuario.getId() + ", Nome: " + usuario.getNome() + ", Idade: " + usuario.getIdade() +
-                    ", CPF: " + usuario.getCpf() + ", Email: " + usuario.getEmail() + ", Tipo de Usuário: " + usuario.getTipoUsuario());
-        }
-
-        // === Listagem de Eventos ===
-        System.out.println("\n=== Lista de Eventos ===");
-        List<Evento> eventos = objEventoDAO.listar();
-        for (Evento evento : eventos) {
-            System.out.println("ID: " + evento.getId() + ", Título: " + evento.getTitulo() +
-                    ", Descrição: " + evento.getDescricao() + ", Tipo: " + evento.getTipo() +
-                    ", Data: " + new SimpleDateFormat("dd/MM/yyyy").format(evento.getData()) +
-                    ", Usuário: " + evento.getUsuario().getNome());
+            System.out.println("ID: " + usuario.getId() +
+                    ", Nome: " + usuario.getNome() +
+                    ", Idade: " + usuario.getIdade() +
+                    ", CPF: " + usuario.getCpf() +
+                    ", Email: " + usuario.getEmail() +
+                    ", Tipo de Usuário: " + usuario.getTipoUsuario());
         }
 
         sc.close();
