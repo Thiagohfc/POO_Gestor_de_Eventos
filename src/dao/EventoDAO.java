@@ -17,13 +17,18 @@ public class EventoDAO {
 
     public void inserir(Evento evento) {
         String sql = "INSERT INTO evento (evento_titulo, evento_descricao, evento_tipo, evento_data, usuario_usuario_id) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, evento.getTitulo());
             stmt.setString(2, evento.getDescricao());
             stmt.setString(3, evento.getTipo());
             stmt.setDate(4, new java.sql.Date(evento.getData().getTime()));
             stmt.setInt(5, evento.getUsuario().getId());
             stmt.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                evento.setId(rs.getInt(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
