@@ -2,6 +2,8 @@ package main;
 
 import dao.UsuarioDAO;
 import dao.EventoDAO;
+import dao.RecursoDAO;
+import model.Recurso;
 import model.Usuario;
 import model.Evento;
 import util.Criptografia;
@@ -17,6 +19,7 @@ public class Main {
         Usuario objUsuario = new Usuario();
         UsuarioDAO objUsuarioDAO = new UsuarioDAO();
         EventoDAO objEventoDAO = new EventoDAO();
+        RecursoDAO objRecursoDAO = new RecursoDAO();
         Criptografia objCriptografia = new Criptografia();
 
         // === Cadastro de Usuário ===
@@ -48,6 +51,7 @@ public class Main {
             System.out.println("2 - Editar evento");
             System.out.println("3 - Excluir evento");
             System.out.println("4 - Listar eventos");
+            System.out.println("5 - Adicionar recurso");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             opcao = sc.nextInt();
@@ -75,6 +79,36 @@ public class Main {
                     evento.setUsuario(usuarioLogado);
                     objEventoDAO.inserir(evento);
                     System.out.println("Evento inserido com sucesso!");
+
+
+
+                    System.out.println("\nDeseja adicionar algum recurso agora?");
+                    System.out.println("1 - Sim");
+                    System.out.println("2 - Não");
+
+                    opcao = sc.nextInt();
+                    sc.nextLine();
+                    while (opcao == 1) {
+                        Recurso recurso = new Recurso();
+                        System.out.print("Nome do recurso: ");
+                        recurso.setNome(sc.nextLine());
+                        System.out.print("Qual a quantidade necessária? ");
+                        recurso.setQuantidade(sc.nextInt());
+                        sc.nextLine();
+                        System.out.print("Deixe uma descrição desse recurso: ");
+                        recurso.setDescricao(sc.nextLine());
+
+
+                        recurso.setEvento(evento);
+                        objRecursoDAO.inserir(recurso);
+
+                        System.out.println("\nRecurso inserido com sucesso! Deseja inserir outro?");
+                        System.out.println("1 - Sim");
+                        System.out.println("2 - Não");
+                        opcao = sc.nextInt();
+                        sc.nextLine();
+
+                    }
                     break;
                 }
 
@@ -134,6 +168,51 @@ public class Main {
                     }
                     break;
                 }
+
+                case 5: {
+                    List<Evento> eventos = objEventoDAO.listar();
+                    if (eventos.isEmpty()) {
+                        System.out.println("Nenhum evento cadastrado.");
+                    } else {
+                        System.out.println("\n=== Lista de Eventos ===");
+                        for (Evento evento : eventos) {
+                            System.out.println("ID: " + evento.getId() +
+                                    ", Título: " + evento.getTitulo());
+                        }
+
+                        System.out.print("Digite o ID do evento que deseja adicionar recurso: ");
+                        int idEvento = sc.nextInt();
+                        sc.nextLine();
+
+                        Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
+                        if (eventoSelecionado != null) {
+                            int opcaoRecurso = 1;
+                            while (opcaoRecurso == 1) {
+                                Recurso recurso = new Recurso();
+                                System.out.print("Nome do recurso: ");
+                                recurso.setNome(sc.nextLine());
+                                System.out.print("Quantidade necessária: ");
+                                recurso.setQuantidade(sc.nextInt());
+                                sc.nextLine();
+                                System.out.print("Descrição do recurso: ");
+                                recurso.setDescricao(sc.nextLine());
+
+                                recurso.setEvento(eventoSelecionado);
+                                objRecursoDAO.inserir(recurso);
+
+                                System.out.println("\nRecurso inserido com sucesso! Deseja adicionar outro?");
+                                System.out.println("1 - Sim");
+                                System.out.println("2 - Não");
+                                opcaoRecurso = sc.nextInt();
+                                sc.nextLine();
+                            }
+                        } else {
+                            System.out.println("Evento não encontrado.");
+                        }
+                    }
+                    break;
+                }
+
 
                 case 0:
                     System.out.println("Saindo...");
