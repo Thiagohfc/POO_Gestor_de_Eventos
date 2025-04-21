@@ -11,7 +11,7 @@ public class Evento {
     private Usuario usuario; // FK
 
     private Endereco endereco;
-  //  private List<Recurso> recurso;
+    private List<Recurso> recurso;
   //  private List<Atracao> atracao;
 
     public int getId() {
@@ -70,13 +70,13 @@ public class Evento {
         this.endereco = endereco;
     }
 
-    //public List<Recurso> getRecurso() {
-    //    return recurso;
-    //}
+    public List<Recurso> getRecurso() {
+        return recurso;
+    }
 
-   // public void setRecurso(List<Recurso> recurso) {
-   //     this.recurso = recurso;
-   // }
+    public void setRecurso(List<Recurso> recurso) {
+        this.recurso = recurso;
+    }
 
    // public List<Atracao> getAtracao() {
    //     return atracao;
