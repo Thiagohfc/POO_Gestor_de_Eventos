@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS eventosdb.evento (
   CONSTRAINT fk_evento_usuario1
     FOREIGN KEY (usuario_usuario_id)
     REFERENCES eventosdb.usuario (usuario_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS eventosdb.endereco (
   CONSTRAINT fk_endereco_evento1
     FOREIGN KEY (evento_evento_id)
     REFERENCES eventosdb.evento (evento_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS eventosdb.recurso (
   CONSTRAINT fk_recursos_evento
     FOREIGN KEY (evento_evento_id)
     REFERENCES eventosdb.evento (evento_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -96,8 +96,8 @@ CREATE TABLE IF NOT EXISTS eventosdb.atracao (
   CONSTRAINT fk_atracoes_evento1
     FOREIGN KEY (evento_evento_id)
     REFERENCES eventosdb.evento (evento_id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
