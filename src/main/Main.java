@@ -1,8 +1,10 @@
 package main;
 
+import dao.AtracaoDAO;
 import dao.UsuarioDAO;
 import dao.EventoDAO;
 import dao.RecursoDAO;
+import model.Atracao;
 import model.Recurso;
 import model.Usuario;
 import model.Evento;
@@ -20,6 +22,7 @@ public class Main {
         UsuarioDAO objUsuarioDAO = new UsuarioDAO();
         EventoDAO objEventoDAO = new EventoDAO();
         RecursoDAO objRecursoDAO = new RecursoDAO();
+        AtracaoDAO objAtracaoDAO = new AtracaoDAO();
         Criptografia objCriptografia = new Criptografia();
 
         // === Cadastro de Usuário ===
@@ -52,6 +55,7 @@ public class Main {
             System.out.println("3 - Excluir evento");
             System.out.println("4 - Listar eventos");
             System.out.println("5 - Adicionar recurso");
+            System.out.println("6 - Adicionar atração");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
             opcao = sc.nextInt();
@@ -109,6 +113,33 @@ public class Main {
                         sc.nextLine();
 
                     }
+
+                    System.out.println("\nDeseja adicionar alguma atração agora?");
+                    System.out.println("1 - Sim");
+                    System.out.println("2 - Não");
+
+                    opcao = sc.nextInt();
+                    sc.nextLine();
+                    while (opcao == 1) {
+                        Atracao atracao = new Atracao();
+                        System.out.print("Nome do atracao: ");
+                        atracao.setNome(sc.nextLine());
+                        System.out.print("Tipo de atracao: ");
+                        atracao.setTipo(sc.nextLine());
+                        System.out.print("Horário da atraçao(00:00): ");
+                        atracao.setHorario(sc.nextLine());
+
+                        atracao.setEvento(evento);
+                        objAtracaoDAO.inserir(atracao);
+
+                        System.out.println("\nAtração inserida com sucesso! Deseja inserir outra?");
+                        System.out.println("1 - Sim");
+                        System.out.println("2 - Não");
+                        opcao = sc.nextInt();
+                        sc.nextLine();
+
+                    }
+
                     break;
                 }
 
@@ -204,6 +235,50 @@ public class Main {
                                 System.out.println("1 - Sim");
                                 System.out.println("2 - Não");
                                 opcaoRecurso = sc.nextInt();
+                                sc.nextLine();
+                            }
+                        } else {
+                            System.out.println("Evento não encontrado.");
+                        }
+                    }
+                    break;
+                }
+
+                case 6: {
+                    List<Evento> eventos = objEventoDAO.listar();
+                    if (eventos.isEmpty()) {
+                        System.out.println("Nenhum evento cadastrado.");
+                    } else {
+                        System.out.println("\n=== Lista de Eventos ===");
+                        for (Evento evento : eventos) {
+                            System.out.println("ID: " + evento.getId() +
+                                    ", Título: " + evento.getTitulo());
+                        }
+
+                        System.out.print("Digite o ID do evento que deseja adicionar atração: ");
+                        int idEvento = sc.nextInt();
+                        sc.nextLine();
+
+                        Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
+                        if (eventoSelecionado != null) {
+                            int opcaoAtracao = 1;
+                            while (opcaoAtracao == 1) {
+                                Atracao atracao = new Atracao();
+                                System.out.print("Nome da atracao: ");
+                                atracao.setNome(sc.nextLine());
+                                System.out.print("Tipo da atracao: ");
+                                atracao.setTipo(sc.nextLine());
+                                sc.nextLine();
+                                System.out.print("Horário da atração(00:00): ");
+                                atracao.setHorario(sc.nextLine());
+
+                                atracao.setEvento(eventoSelecionado);
+                                objAtracaoDAO.inserir(atracao);
+
+                                System.out.println("\nAtração inserida com sucesso! Deseja adicionar outra?");
+                                System.out.println("1 - Sim");
+                                System.out.println("2 - Não");
+                                opcaoAtracao = sc.nextInt();
                                 sc.nextLine();
                             }
                         } else {
