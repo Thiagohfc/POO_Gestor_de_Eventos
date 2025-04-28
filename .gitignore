@@ -1,4 +1,5 @@
 # Ignora pastas de compilação
+/out
 src/out/
 /build/
 /target/
