@@ -1,12 +1,12 @@
 package model;
 
-public class Usuario {
-    private int id;
-    private String nome;
-    private int idade;
-    private String cpf;
-    private String email;
-    private String senha;
+public abstract class Usuario {
+    protected int id;
+    protected String nome;
+    protected int idade;
+    protected String cpf;
+    protected String email;
+    protected String senha;
     private String tipoUsuario;
 
     public Usuario() {}
@@ -21,52 +21,29 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+    // Getters e Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public String getNome() {
-        return nome;
-    }
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public int getIdade() {
-        return idade;
-    }
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
+    public int getIdade() { return idade; }
+    public void setIdade(int idade) { this.idade = idade; }
 
-    public String getCpf() {
-        return cpf;
-    }
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getSenha() {
-        return senha;
-    }
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
 
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
+    public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+
+    // Método abstrato para forçar cada tipo de usuário a definir seu tipo
+    public abstract String getTipoUsuario();
+
+    public abstract void exibirMenu();
 }
