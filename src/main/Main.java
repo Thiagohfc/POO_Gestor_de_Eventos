@@ -4,6 +4,7 @@ import dao.AtracaoDAO;
 import dao.UsuarioDAO;
 import dao.EventoDAO;
 import dao.RecursoDAO;
+import dao.EnderecoDAO;
 import model.*;
 import util.Criptografia;
 
@@ -18,6 +19,7 @@ public class Main {
     private static EventoDAO objEventoDAO;
     private static RecursoDAO objRecursoDAO;
     private static AtracaoDAO objAtracaoDAO;
+    private static EnderecoDAO objEnderecoDAO;
     private static Criptografia objCriptografia;
     private static Scanner sc;
 
@@ -27,6 +29,7 @@ public class Main {
         objEventoDAO = new EventoDAO();
         objRecursoDAO = new RecursoDAO();
         objAtracaoDAO = new AtracaoDAO();
+        objEnderecoDAO = new EnderecoDAO();
         objCriptografia = new Criptografia();
         usuarioLogado = null;
 
@@ -156,6 +159,7 @@ public class Main {
                     System.out.println("4 - Listar eventos");
                     System.out.println("5 - Adicionar recurso");
                     System.out.println("6 - Adicionar atração");
+                    System.out.println("7 - Editar endereço");
                     System.out.println("0 - Sair");
                     System.out.print("Escolha uma opção: ");
                     opc = sc.nextInt();
@@ -164,6 +168,7 @@ public class Main {
                     switch (opc) {
                         case 1: {
                             Evento evento = new Evento();
+                            sc.nextLine();
                             System.out.print("Título: ");
                             evento.setTitulo(sc.nextLine());
                             System.out.print("Descrição: ");
@@ -183,6 +188,25 @@ public class Main {
                             evento.setUsuario(usuarioLogado);
                             objEventoDAO.inserir(evento);
                             System.out.println("Evento inserido com sucesso!");
+
+                            System.out.println("\n=== Cadastro de Endereço do Evento ===");
+                            Endereco endereco = new Endereco();
+                            System.out.print("Estado: ");
+                            endereco.setEstado(sc.nextLine());
+                            System.out.print("Cidade: ");
+                            endereco.setCidade(sc.nextLine());
+                            System.out.print("Rua: ");
+                            endereco.setRua(sc.nextLine());
+                            System.out.print("Número: ");
+                            endereco.setNumero(sc.nextLine());
+                            System.out.print("Lotação máxima do local: ");
+                            endereco.setLotacao(sc.nextInt());
+                            sc.nextLine();
+
+                            endereco.setEvento(evento);
+                            objEnderecoDAO.inserir(endereco);
+                            System.out.println("Endereço do evento cadastrado com sucesso!");
+
 
                             System.out.println("\nDeseja adicionar algum recurso agora?");
                             System.out.println("1 - Sim");
@@ -377,6 +401,38 @@ public class Main {
                                 } else {
                                     System.out.println("Evento não encontrado.");
                                 }
+                            }
+                            break;
+                        }
+                        case 7: {
+                            System.out.print("Digite o ID do evento que deseja editar o endereço: ");
+                            int id = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento evento = objEventoDAO.buscarPorId(id);
+                            if (evento != null) {
+                                Endereco endereco = objEnderecoDAO.buscarPorEventoId(id);
+                                if (endereco != null) {
+                                    System.out.print("Novo estado (anterior: " + endereco.getEstado() + "): ");
+                                    endereco.setEstado(sc.nextLine());
+                                    System.out.print("Nova cidade (anterior: " + endereco.getCidade() + "): ");
+                                    endereco.setCidade(sc.nextLine());
+                                    System.out.print("Nova rua (anterior: " + endereco.getRua() + "): ");
+                                    endereco.setRua(sc.nextLine());
+                                    System.out.print("Novo número (anterior: " + endereco.getNumero() + "): ");
+                                    endereco.setNumero(sc.nextLine());
+                                    System.out.print("Nova lotação (anterior: " + endereco.getLotacao() + "): ");
+                                    endereco.setLotacao(sc.nextInt());
+                                    sc.nextLine();
+
+                                    endereco.setEvento(evento); // mantém a referência ao evento
+                                    objEnderecoDAO.atualizar(endereco);
+                                    System.out.println("Endereço do evento atualizado com sucesso!");
+                                } else {
+                                    System.out.println("Endereço não encontrado para este evento.");
+                                }
+                            } else {
+                                System.out.println("Evento não encontrado.");
                             }
                             break;
                         }

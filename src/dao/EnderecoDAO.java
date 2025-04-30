@@ -86,6 +86,32 @@ public class EnderecoDAO {
             e.printStackTrace();
         }
     }
+    public Endereco buscarPorEventoId(int eventoId) {
+        String sql = "SELECT * FROM endereco WHERE evento_evento_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, eventoId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Endereco endereco = new Endereco();
+                endereco.setId(rs.getInt("endereco_id"));
+                endereco.setEstado(rs.getString("endereco_estado"));
+                endereco.setCidade(rs.getString("endereco_cidade"));
+                endereco.setRua(rs.getString("endereco_rua"));
+                endereco.setNumero(rs.getString("endereco_numero"));
+                endereco.setLotacao(rs.getInt("endereco_lotacao"));
+
+                EventoDAO eventoDAO = new EventoDAO();
+                Evento evento = eventoDAO.buscarPorId(eventoId);
+                endereco.setEvento(evento);
+
+                return endereco;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public List<Endereco> listar() {
         List<Endereco> enderecos = new ArrayList<>();
