@@ -36,6 +36,7 @@ public class RecursoDAO {
             if (rs.next()) {
                 Recurso recurso = new Recurso();
                 recurso.setId(rs.getInt("recursos_id"));
+                recurso.setNome(rs.getString("recursos_nome"));
                 recurso.setQuantidade(rs.getInt("recursos_qtd"));
                 recurso.setDescricao(rs.getString("recursos_descricao"));
 

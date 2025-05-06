@@ -158,8 +158,11 @@ public class Main {
                     System.out.println("3 - Excluir evento");
                     System.out.println("4 - Listar eventos");
                     System.out.println("5 - Adicionar recurso");
-                    System.out.println("6 - Adicionar atração");
-                    System.out.println("7 - Editar endereço");
+                    System.out.println("6 - Editar recurso");
+                    System.out.println("7 - Excluir recurso");
+                    System.out.println("8 - Listar recursos");
+                    System.out.println("9 - Adicionar atração");
+                    System.out.println("10 - Editar endereço");
                     System.out.println("0 - Sair");
                     System.out.print("Escolha uma opção: ");
                     opc = sc.nextInt();
@@ -363,6 +366,120 @@ public class Main {
                         }
 
                         case 6: {
+                            List<Recurso> recursos = objRecursoDAO.listar();
+                            if (recursos.isEmpty()) {
+                                System.out.println("Nenhum recurso encontrado.");
+                            } else {
+                                System.out.println("\n=== Lista de Recursos ===");
+                                for (Recurso recurso : recursos) {
+                                    System.out.println("ID: " + recurso.getId() + " - Nome: " + recurso.getNome());
+                                }
+
+                                System.out.print("\nDigite o ID do recurso que deseja editar: ");
+                                int id = sc.nextInt();
+                                sc.nextLine();
+
+                                Recurso recurso = objRecursoDAO.buscarPorId(id);
+
+                                if (recurso != null) {
+                                    System.out.println("Editando o recurso: " + recurso.getNome());
+
+                                    System.out.print("Novo nome (anterior: " + recurso.getNome() + "): ");
+                                    recurso.setNome(sc.nextLine());
+
+                                    System.out.print("Nova quantidade (anterior: " + recurso.getQuantidade() + "): ");
+                                    recurso.setQuantidade(sc.nextInt());
+                                    sc.nextLine();
+
+                                    System.out.print("Nova descrição (anterior: " + recurso.getDescricao() + "): ");
+                                    recurso.setDescricao(sc.nextLine());
+
+                                    objRecursoDAO.atualizar(recurso);
+                                    System.out.println("\nRecurso atualizado com sucesso!");
+                                } else {
+                                    System.out.println("Recurso não encontrado.");
+                                }
+                            }
+                            break;
+                        }
+
+                        case 7: {
+                            List<Recurso> recursos = objRecursoDAO.listar();
+
+                            if (recursos.isEmpty()) {
+                                System.out.println("Nenhum recurso cadastrado.");
+                            } else {
+                                System.out.println("\n=== Lista de Recursos ===");
+                                for (Recurso recurso : recursos) {
+                                    System.out.println("ID: " + recurso.getId() +
+                                            ", Nome: " + recurso.getNome() +
+                                            ", Evento: " + recurso.getEvento().getTitulo());
+                                }
+
+                                System.out.print("\nDigite o ID do recurso que deseja excluir: ");
+                                int idExcluir = sc.nextInt();
+                                sc.nextLine();
+
+                                Recurso recurso = objRecursoDAO.buscarPorId(idExcluir);
+                                if (recurso != null) {
+                                    System.out.print("Tem certeza que deseja excluir o recurso '" + recurso.getNome() + "'? (s/n): ");
+                                    String confirmacao = sc.nextLine();
+                                    if (confirmacao.equalsIgnoreCase("s")) {
+                                        objRecursoDAO.excluir(idExcluir);
+                                        System.out.println("Recurso excluído com sucesso.");
+                                    } else {
+                                        System.out.println("Exclusão cancelada.");
+                                    }
+                                } else {
+                                    System.out.println("Recurso não encontrado.");
+                                }
+                            }
+                            break;
+                        }
+
+                        case 8: {
+                            List<Evento> eventos = objEventoDAO.listar();
+
+                            if (eventos.isEmpty()) {
+                                System.out.println("Nenhum evento cadastrado.");
+                            } else {
+                                System.out.println("\n=== Lista de Eventos ===");
+                                for (Evento evento : eventos) {
+                                    System.out.println("ID: " + evento.getId() + ", Título: " + evento.getTitulo());
+                                }
+
+                                System.out.print("\nDigite o ID do evento para ver os recursos: ");
+                                int idEvento = sc.nextInt();
+                                sc.nextLine();
+
+                                Evento evento = objEventoDAO.buscarPorId(idEvento);
+                                if (evento != null) {
+                                    List<Recurso> recursos = objRecursoDAO.listar();
+                                    boolean encontrou = false;
+
+                                    System.out.println("\n=== Recursos do Evento: " + evento.getTitulo() + " ===");
+                                    for (Recurso recurso : recursos) {
+                                        if (recurso.getEvento().getId() == evento.getId()) {
+                                            encontrou = true;
+                                            System.out.println("ID: " + recurso.getId() +
+                                                    ", Nome: " + recurso.getNome() +
+                                                    ", Quantidade: " + recurso.getQuantidade() +
+                                                    ", Descrição: " + recurso.getDescricao());
+                                        }
+                                    }
+
+                                    if (!encontrou) {
+                                        System.out.println("Nenhum recurso associado a este evento.");
+                                    }
+
+                                } else {
+                                    System.out.println("Evento não encontrado.");
+                                }
+                            }
+                            break;
+                        }
+
+                        case 9: {
                             List<Evento> eventos = objEventoDAO.listar();
                             if (eventos.isEmpty()) {
                                 System.out.println("Nenhum evento cadastrado.");
@@ -404,7 +521,8 @@ public class Main {
                             }
                             break;
                         }
-                        case 7: {
+
+                        case 10: {
                             System.out.print("Digite o ID do evento que deseja editar o endereço: ");
                             int id = sc.nextInt();
                             sc.nextLine();
