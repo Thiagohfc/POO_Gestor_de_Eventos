@@ -163,6 +163,10 @@ public class Main {
                     System.out.println("8 - Listar recursos");
                     System.out.println("9 - Adicionar atração");
                     System.out.println("10 - Editar endereço");
+                    System.out.println("11 - Editar atração");
+                    System.out.println("12 - Excluir atração");
+                    System.out.println("13 - Listar atrações");
+
                     System.out.println("0 - Sair");
                     System.out.print("Escolha uma opção: ");
                     opc = sc.nextInt();
@@ -554,6 +558,145 @@ public class Main {
                             }
                             break;
                         }
+
+                        case 11: {
+                            System.out.print("Digite o ID do evento para listar as atrações: ");
+                            int idEvento = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento evento = objEventoDAO.buscarPorId(idEvento);
+                            if (evento == null) {
+                                System.out.println("Evento não encontrado.");
+                                break;
+                            }
+
+                            List<Atracao> atracoes = objAtracaoDAO.listar();
+                            List<Atracao> atracoesEvento = atracoes.stream()
+                                    .filter(a -> a.getEvento().getId() == idEvento)
+                                    .toList();
+
+                            if (atracoesEvento.isEmpty()) {
+                                System.out.println("Nenhuma atração cadastrada para este evento.");
+                            } else {
+                                System.out.println("\n=== Atrações do Evento: " + evento.getTitulo() + " ===");
+                                for (Atracao atracao : atracoesEvento) {
+                                    System.out.println("ID: " + atracao.getId() + " - Nome: " + atracao.getNome());
+                                }
+
+                                System.out.print("Digite o ID da atração que deseja editar: ");
+                                int idAtracao = sc.nextInt();
+                                sc.nextLine();
+
+                                Atracao atracao = objAtracaoDAO.buscarPorId(idAtracao);
+                                if (atracao != null && atracao.getEvento().getId() == idEvento) {
+                                    System.out.print("Novo nome (anterior: " + atracao.getNome() + "): ");
+                                    atracao.setNome(sc.nextLine());
+
+                                    System.out.print("Novo tipo (anterior: " + atracao.getTipo() + "): ");
+                                    atracao.setTipo(sc.nextLine());
+
+                                    System.out.print("Novo horário (anterior: " + atracao.getHorario() + "): ");
+                                    atracao.setHorario(sc.nextLine());
+
+                                    objAtracaoDAO.atualizar(atracao);
+                                    System.out.println("Atração atualizada com sucesso!");
+                                } else {
+                                    System.out.println("Atração não encontrada ou não pertence a este evento.");
+                                }
+                            }
+                            break;
+                        }
+
+                        case 12: {
+                            System.out.print("Digite o ID do evento para listar as atrações: ");
+                            int idEvento = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento evento = objEventoDAO.buscarPorId(idEvento);
+                            if (evento == null) {
+                                System.out.println("Evento não encontrado.");
+                                break;
+                            }
+
+                            List<Atracao> atracoes = objAtracaoDAO.listar();
+                            List<Atracao> atracoesEvento = atracoes.stream()
+                                    .filter(a -> a.getEvento().getId() == idEvento)
+                                    .toList();
+
+                            if (atracoesEvento.isEmpty()) {
+                                System.out.println("Nenhuma atração cadastrada para este evento.");
+                            } else {
+                                System.out.println("\n=== Atrações do Evento: " + evento.getTitulo() + " ===");
+                                for (Atracao atracao : atracoesEvento) {
+                                    System.out.println("ID: " + atracao.getId() + " - Nome: " + atracao.getNome());
+                                }
+
+                                System.out.print("Digite o ID da atração que deseja excluir: ");
+                                int idExcluir = sc.nextInt();
+                                sc.nextLine();
+
+                                Atracao atracao = objAtracaoDAO.buscarPorId(idExcluir);
+                                if (atracao != null && atracao.getEvento().getId() == idEvento) {
+                                    System.out.print("Tem certeza que deseja excluir a atração '" + atracao.getNome() + "'? (s/n): ");
+                                    String confirmacao = sc.nextLine();
+                                    if (confirmacao.equalsIgnoreCase("s")) {
+                                        objAtracaoDAO.excluir(idExcluir);
+                                        System.out.println("Atração excluída com sucesso.");
+                                    } else {
+                                        System.out.println("Exclusão cancelada.");
+                                    }
+                                } else {
+                                    System.out.println("Atração não encontrada ou não pertence a este evento.");
+                                }
+                            }
+                            break;
+                        }
+
+                        case 13: {
+                            String sair = "n";
+                            while(sair == "n") {
+                                List<Evento> eventos = objEventoDAO.listar();
+                                if (eventos.isEmpty()) {
+                                    System.out.println("Nenhum evento cadastrado.");
+                                } else {
+                                    System.out.println("\n=== Lista de Eventos ===");
+                                    for (Evento evento : eventos) {
+                                        System.out.println("ID: " + evento.getId() +
+                                                ", Título: " + evento.getTitulo());
+                                    }
+                                }
+                                System.out.print("Digite o ID do evento para listar as atrações: ");
+                                int idEvento = sc.nextInt();
+                                sc.nextLine();
+
+                                Evento evento = objEventoDAO.buscarPorId(idEvento);
+                                if (evento == null) {
+                                    System.out.println("Evento não encontrado.");
+                                    break;
+                                }
+
+                                List<Atracao> atracoes = objAtracaoDAO.listar();
+                                List<Atracao> atracoesEvento = atracoes.stream()
+                                        .filter(a -> a.getEvento().getId() == idEvento)
+                                        .toList();
+
+                                if (atracoesEvento.isEmpty()) {
+                                    System.out.println("Nenhuma atração cadastrada para este evento.");
+                                } else {
+                                    System.out.println("\n=== Atrações do Evento: " + evento.getTitulo() + " ===");
+                                    for (Atracao atracao : atracoesEvento) {
+                                        System.out.println("ID: " + atracao.getId() +
+                                                ", Nome: " + atracao.getNome() +
+                                                ", Tipo: " + atracao.getTipo() +
+                                                ", Horário: " + atracao.getHorario());
+                                    }
+                                }
+                                System.out.println("Deseja listar atrações de outro evento? (s/n): ");
+                                sair = sc.nextLine();
+                            }
+                            break;
+                        }
+
 
                         case 0:
                             System.out.println("Saindo...");
