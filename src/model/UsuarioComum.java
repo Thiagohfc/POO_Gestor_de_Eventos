@@ -17,9 +17,9 @@ public class UsuarioComum extends Usuario {
 
     @Override
     public void exibirMenu() {
-        System.out.println("===== MENU do USUÁRIO=====");
+        System.out.println("===== MENU do USUÁRIO =====");
         System.out.println("1. Ver meus dados");
-        System.out.println("2. Meus Eventos");
+        System.out.println("2. Ver Menu de Eventos");
         System.out.println("3. Sair");
     }
 }

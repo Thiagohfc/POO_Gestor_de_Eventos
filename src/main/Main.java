@@ -175,7 +175,6 @@ public class Main {
                     switch (opc) {
                         case 1: {
                             Evento evento = new Evento();
-                            sc.nextLine();
                             System.out.print("Título: ");
                             evento.setTitulo(sc.nextLine());
                             System.out.print("Descrição: ");
