@@ -33,52 +33,56 @@ public class Main {
         objCriptografia = new Criptografia();
         usuarioLogado = null;
 
-        while (usuarioLogado == null) {
-            System.out.println("\n===== MENU PRINCIPAL =====");
-            System.out.println("1 - Login");
-            System.out.println("2 - Cadastrar-se");
-            System.out.println("3 - Sair");
-            System.out.print("Escolha uma opção: ");
-            int opcao = sc.nextInt();
-            sc.nextLine(); // Consumir o ENTER
+        while (true) {
+            usuarioLogado = null;
 
-            switch (opcao) {
-                case 1:
-                    usuarioLogado = fazerLogin();
-                    break;
-                case 2:
-                    fazerCadastro();
-                    break;
-                case 3:
-                    System.out.println("Encerrando...");
-                    sc.close();
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Opção inválida!");
+            while (usuarioLogado == null) {
+                System.out.println("\n===== MENU PRINCIPAL =====");
+                System.out.println("1 - Login");
+                System.out.println("2 - Cadastrar-se");
+                System.out.println("3 - Sair");
+                System.out.print("Escolha uma opção: ");
+                int opcao = sc.nextInt();
+                sc.nextLine(); // Consumir o ENTER
+
+                switch (opcao) {
+                    case 1:
+                        usuarioLogado = fazerLogin();
+                        break;
+                    case 2:
+                        fazerCadastro();
+                        break;
+                    case 3:
+                        System.out.println("Encerrando...");
+                        sc.close();
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Opção inválida!");
+                }
             }
-        }
 
-        System.out.println("\nBem-vindo, " + usuarioLogado.getNome() + "!");
+            System.out.println("\nBem-vindo, " + usuarioLogado.getNome() + "!");
 
-        boolean continuar = true;
-        while (continuar) {
-            usuarioLogado.exibirMenu();
-            System.out.print("Escolha uma opção: ");
-            int opcao = sc.nextInt();
-            sc.nextLine();
+            boolean continuar = true;
+            while (continuar && usuarioLogado != null) {
+                usuarioLogado.exibirMenu();
+                System.out.print("Escolha uma opção: ");
+                int opcao = sc.nextInt();
+                sc.nextLine();
 
-            if (usuarioLogado instanceof UsuarioAdmin) {
-                continuar = processarOpcaoAdmin(opcao);
-            } else if (usuarioLogado instanceof UsuarioComum) {
-                continuar = processarOpcaoComum(opcao);
-            } else {
-                System.out.println("Tipo de usuário desconhecido.");
-                continuar = false;
+                if (usuarioLogado instanceof UsuarioAdmin) {
+                    continuar = processarOpcaoAdmin(opcao);
+                } else if (usuarioLogado instanceof UsuarioComum) {
+                    continuar = processarOpcaoComum(opcao);
+                } else {
+                    System.out.println("Tipo de usuário desconhecido.");
+                    continuar = false;
+                }
             }
-        }
 
-        System.out.println("Logout realizado com sucesso!\n");
+            System.out.println("Logout realizado com sucesso!\n");
+        }
     }
 
     private static Usuario fazerLogin() {
@@ -147,7 +151,30 @@ public class Main {
     private static boolean processarOpcaoComum(int opcao) {
         switch (opcao) {
             case 1:
-                System.out.println("Listando eventos disponíveis...");
+                int opcao2 = 0;
+                do {
+                    System.out.println("\n=== MEUS DADOS ===");
+                    System.out.println("Nome: " + usuarioLogado.getNome());
+                    System.out.println("Email: " + usuarioLogado.getEmail());
+                    System.out.println("Idade: " + usuarioLogado.getIdade());
+                    System.out.println("CPF: " + usuarioLogado.getCpf());
+
+                    System.out.println("\n=== MENU ===");
+                    System.out.println("1 - Editar Dados");
+                    System.out.println("2 - Voltar");
+                    opcao2 = sc.nextInt();
+                    sc.nextLine();
+                    switch (opcao2) {
+                        case 1: {
+                            editarDadosUsuario();
+                            break;
+                        }
+                        case 2: {
+                            System.out.println("Voltando ao menu anterior...");
+                            break;
+                        }
+                    }
+                }while (opcao2 != 2);
                 break;
             case 2:
                 int opc = -1;
@@ -167,7 +194,7 @@ public class Main {
                     System.out.println("12 - Excluir atração");
                     System.out.println("13 - Listar atrações");
 
-                    System.out.println("0 - Sair");
+                    System.out.println("0 - Voltar");
                     System.out.print("Escolha uma opção: ");
                     opc = sc.nextInt();
                     sc.nextLine(); // limpar buffer
@@ -695,10 +722,8 @@ public class Main {
                             }
                             break;
                         }
-
-
                         case 0:
-                            System.out.println("Saindo...");
+                            System.out.println("Voltando ao menu anterior...");
                             break;
 
                         default:
@@ -709,6 +734,7 @@ public class Main {
             case 3:
                 System.out.println("Saindo...");
                 usuarioLogado = null;
+                return false;
             default:
                 System.out.println("Opção inválida. Tente novamente.");
         }
@@ -792,5 +818,112 @@ public class Main {
                 System.out.println("Opção inválida. Tente novamente.");
         }
         return true;
+    }
+
+    public static void editarDadosUsuario() {
+        int opcao;
+        do {
+            System.out.println("\n=== EDITAR DADOS ===");
+            System.out.println("1 - Nome");
+            System.out.println("2 - Idade");
+            System.out.println("3 - CPF");
+            System.out.println("4 - Email");
+            System.out.println("5 - Senha");
+            System.out.println("6 - Voltar");
+            System.out.print("Escolha o que deseja editar: ");
+            opcao = sc.nextInt();
+            sc.nextLine(); // limpar buffer
+
+            if (opcao >= 1 && opcao <= 4) {
+                System.out.print("Digite sua senha atual para confirmar: ");
+                String senha = objCriptografia.encriptarMD5(sc.nextLine());
+                if (!senha.equals(usuarioLogado.getSenha())) {
+                    System.out.println("Senha incorreta. Edição cancelada.");
+                    continue;
+                }
+            }
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Novo nome: ");
+                    String nome = sc.nextLine();
+                    System.out.print("Confirmar alteração? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        usuarioLogado.setNome(nome);
+                        objUsuarioDAO.atualizar(usuarioLogado);
+                        System.out.println("Nome atualizado com sucesso.");
+                    } else {
+                        System.out.println("Alteração cancelada.");
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Nova idade: ");
+                    int idade = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Confirmar alteração? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        usuarioLogado.setIdade(idade);
+                        objUsuarioDAO.atualizar(usuarioLogado);
+                        System.out.println("Idade atualizada com sucesso.");
+                    } else {
+                        System.out.println("Alteração cancelada.");
+                    }
+                    break;
+
+                case 3:
+                    System.out.print("Novo CPF: ");
+                    String cpf = sc.nextLine();
+                    System.out.print("Confirmar alteração? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        usuarioLogado.setCpf(cpf);
+                        objUsuarioDAO.atualizar(usuarioLogado);
+                        System.out.println("CPF atualizado com sucesso.");
+                    } else {
+                        System.out.println("Alteração cancelada.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Novo email: ");
+                    String email = sc.nextLine();
+                    System.out.print("Confirmar alteração? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        usuarioLogado.setEmail(email);
+                        objUsuarioDAO.atualizar(usuarioLogado);
+                        System.out.println("Email atualizado com sucesso.");
+                    } else {
+                        System.out.println("Alteração cancelada.");
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("Digite a senha atual: ");
+                    String senhaAtual = objCriptografia.encriptarMD5(sc.nextLine());
+                    if (!senhaAtual.equals(usuarioLogado.getSenha())) {
+                        System.out.println("Senha atual incorreta.");
+                        break;
+                    }
+                    System.out.print("Nova senha: ");
+                    String novaSenha = objCriptografia.encriptarMD5(sc.nextLine());
+                    System.out.print("Confirmar alteração? (s/n): ");
+                    if (sc.nextLine().equalsIgnoreCase("s")) {
+                        usuarioLogado.setSenha(novaSenha);
+                        objUsuarioDAO.atualizar(usuarioLogado);
+                        System.out.println("Senha atualizada com sucesso.");
+                    } else {
+                        System.out.println("Alteração cancelada.");
+                    }
+                    break;
+
+                case 6:
+                    System.out.println("Voltando ao menu anterior...");
+                    break;
+
+                default:
+                    System.out.println("Opção inválida.");
+            }
+
+        } while (opcao != 6);
     }
 }
