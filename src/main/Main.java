@@ -649,15 +649,8 @@ public class Main {
                         case 12: {
                             String sair = "n";
                             while (sair == "n") {
-                                List<Evento> eventos = objEventoDAO.listar();
-                                if (eventos.isEmpty()) {
-                                    System.out.println("Nenhum evento cadastrado.");
-                                } else {
-                                    System.out.println("\n=== Lista de Eventos ===");
-                                    for (Evento evento : eventos) {
-                                        System.out.println("ID: " + evento.getId() +
-                                                ", Título: " + evento.getTitulo());
-                                    }
+                                if(!listarEventosDoUsuarioLogado()){
+                                    break;
                                 }
                                 System.out.print("Digite o ID do evento para listar as atrações: ");
                                 int idEvento = sc.nextInt();
