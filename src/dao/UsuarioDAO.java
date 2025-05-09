@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioDAO {
+public class UsuarioDAO implements InterfaceDAO<Usuario> {
     private Connection connection;
 
     public UsuarioDAO() {

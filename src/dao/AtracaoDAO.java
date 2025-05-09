@@ -2,14 +2,13 @@ package dao;
 
 import model.Atracao;
 import model.Evento;
-import model.Recurso;
 import util.Conexao;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AtracaoDAO {
+public class AtracaoDAO implements InterfaceDAO<Atracao> {
 
     private Connection connection;
 

@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnderecoDAO {
+public class EnderecoDAO implements InterfaceDAO<Endereco> {
     private Connection conn;
 
     public EnderecoDAO() {

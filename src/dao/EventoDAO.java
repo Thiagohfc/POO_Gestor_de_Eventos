@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventoDAO {
+public class EventoDAO implements InterfaceDAO<Evento> {
     private Connection conn;
 
     public EventoDAO() {

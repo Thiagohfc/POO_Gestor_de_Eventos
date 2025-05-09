@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecursoDAO {
+public class RecursoDAO implements InterfaceDAO<Recurso> {
 
     private Connection connection;
 
