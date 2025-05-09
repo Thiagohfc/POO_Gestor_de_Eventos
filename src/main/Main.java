@@ -125,21 +125,20 @@ public class Main {
         System.out.println("Cadastro realizado com sucesso!");
     }
 
-    private static void listarEventosDoUsuarioLogado() {
+    private static boolean listarEventosDoUsuarioLogado() {
         List<Evento> eventos = objEventoDAO.listar();
-        boolean encontrou = false;
+        if (eventos.isEmpty()) {
+            System.out.println("Nenhum evento cadastrado.");
+            return false;
+        } else {
+            System.out.println("===== SEUS EVENTOS =====");
 
-        System.out.println("===== SEUS EVENTOS =====");
-
-        for (Evento evento : eventos) {
-            if (evento.getUsuario().getId() == usuarioLogado.getId()) {
-                System.out.println("ID: " + evento.getId() + " | Título: " + evento.getTitulo());
-                encontrou = true;
+            for (Evento evento : eventos) {
+                if (evento.getUsuario().getId() == usuarioLogado.getId()) {
+                    System.out.println("ID: " + evento.getId() + " | Título: " + evento.getTitulo());
+                }
             }
-        }
-
-        if (!encontrou) {
-            System.out.println("Você ainda não possui eventos cadastrados.");
+            return true;
         }
     }
 
@@ -316,7 +315,9 @@ public class Main {
                         }
 
                         case 2: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento que deseja editar: ");
                             int id = sc.nextInt();
                             sc.nextLine();
@@ -347,7 +348,9 @@ public class Main {
                         }
 
                         case 3: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento que deseja excluir: ");
                             int id = sc.nextInt();
                             sc.nextLine();
@@ -357,6 +360,9 @@ public class Main {
                         }
 
                         case 4: {
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             List<Evento> eventos = objEventoDAO.listar();
                             boolean encontrou = false;
 
@@ -383,7 +389,9 @@ public class Main {
 
 
                         case 5: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento que deseja adicionar recurso: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -416,7 +424,9 @@ public class Main {
                         }
 
                         case 6: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("\nDigite o ID do recurso que deseja editar: ");
                             int id = sc.nextInt();
                             sc.nextLine();
@@ -445,7 +455,9 @@ public class Main {
                         }
 
                         case 7: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("\nDigite o ID do recurso que deseja excluir: ");
                             int idExcluir = sc.nextInt();
                             sc.nextLine();
@@ -467,7 +479,9 @@ public class Main {
                         }
 
                         case 8: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("\nDigite o ID do evento para ver os recursos: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -499,7 +513,9 @@ public class Main {
                         }
 
                         case 9: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento que deseja adicionar atração: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -532,7 +548,9 @@ public class Main {
                         }
 
                         case 10: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento para listar as atrações: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -581,7 +599,9 @@ public class Main {
                         }
 
                         case 11: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento para listar as atrações: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -672,7 +692,9 @@ public class Main {
                         }
 
                         case 13: {
-                            listarEventosDoUsuarioLogado();
+                            if(!listarEventosDoUsuarioLogado()){
+                                break;
+                            }
                             System.out.print("Digite o ID do evento que deseja editar o endereço: ");
                             int id = sc.nextInt();
                             sc.nextLine();
