@@ -125,6 +125,24 @@ public class Main {
         System.out.println("Cadastro realizado com sucesso!");
     }
 
+    private static void listarEventosDoUsuarioLogado() {
+        List<Evento> eventos = objEventoDAO.listar();
+        boolean encontrou = false;
+
+        System.out.println("===== SEUS EVENTOS =====");
+
+        for (Evento evento : eventos) {
+            if (evento.getUsuario().getId() == usuarioLogado.getId()) {
+                System.out.println("ID: " + evento.getId() + " | Título: " + evento.getTitulo());
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println("Você ainda não possui eventos cadastrados.");
+        }
+    }
+
     private static boolean processarOpcaoAdmin(int opcao) {
         switch (opcao) {
             case 1:
@@ -174,27 +192,21 @@ public class Main {
                             break;
                         }
                     }
-                }while (opcao2 != 2);
+                } while (opcao2 != 2);
                 break;
             case 2:
                 int opc = -1;
                 do {
-                    System.out.println("\n=== MENU DE EVENTOS ===");
-                    System.out.println("1 - Inserir evento");
-                    System.out.println("2 - Editar evento");
-                    System.out.println("3 - Excluir evento");
-                    System.out.println("4 - Listar eventos");
-                    System.out.println("5 - Adicionar recurso");
-                    System.out.println("6 - Editar recurso");
-                    System.out.println("7 - Excluir recurso");
-                    System.out.println("8 - Listar recursos");
-                    System.out.println("9 - Adicionar atração");
-                    System.out.println("10 - Editar endereço");
-                    System.out.println("11 - Editar atração");
-                    System.out.println("12 - Excluir atração");
-                    System.out.println("13 - Listar atrações");
-
-                    System.out.println("0 - Voltar");
+                    System.out.println(" _____________________________________________________________________________________________________________________");
+                    System.out.println("|                                                   MENU DE EVENTOS                                                   |");
+                    System.out.println("|_____________________________________________________________________________________________________________________|");
+                    System.out.println("|          |         EVENTO        |         RECURSO         |          ATRAÇÃO           |          ENDEREÇO         |");
+                    System.out.println("|INSERIR   | (1)  Inserir evento   |  (5) Inserir recurso    |   (9)  Inserir atração     |                           |");
+                    System.out.println("|EDITAR    | (2)  Editar evento    |  (6) Editar recurso     |   (10) Editar atração      |   (13) Editar endereço    |");
+                    System.out.println("|EXCLUIR   | (3)  Excluir evento   |  (7) Excluir recurso    |   (11) Excluir atração     |                           |");
+                    System.out.println("|LISTAR    | (4)  Listar eventos   |  (8) Listar recursos    |   (12) Listar atrações     |                           |");
+                    System.out.println("|_____________________________________________________________________________________________________________________|");
+                    System.out.println("\n0 - Voltar");
                     System.out.print("Escolha uma opção: ");
                     opc = sc.nextInt();
                     sc.nextLine(); // limpar buffer
@@ -295,6 +307,7 @@ public class Main {
                         }
 
                         case 2: {
+                            listarEventosDoUsuarioLogado();
                             System.out.print("Digite o ID do evento que deseja editar: ");
                             int id = sc.nextInt();
                             sc.nextLine();
@@ -325,6 +338,7 @@ public class Main {
                         }
 
                         case 3: {
+                            listarEventosDoUsuarioLogado();
                             System.out.print("Digite o ID do evento que deseja excluir: ");
                             int id = sc.nextInt();
                             sc.nextLine();
@@ -352,232 +366,31 @@ public class Main {
                         }
 
                         case 5: {
-                            List<Evento> eventos = objEventoDAO.listar();
-                            if (eventos.isEmpty()) {
-                                System.out.println("Nenhum evento cadastrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Eventos ===");
-                                for (Evento evento : eventos) {
-                                    System.out.println("ID: " + evento.getId() +
-                                            ", Título: " + evento.getTitulo());
-                                }
-
-                                System.out.print("Digite o ID do evento que deseja adicionar recurso: ");
-                                int idEvento = sc.nextInt();
-                                sc.nextLine();
-
-                                Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
-                                if (eventoSelecionado != null) {
-                                    int opcaoRecurso = 1;
-                                    while (opcaoRecurso == 1) {
-                                        Recurso recurso = new Recurso();
-                                        System.out.print("Nome do recurso: ");
-                                        recurso.setNome(sc.nextLine());
-                                        System.out.print("Quantidade necessária: ");
-                                        recurso.setQuantidade(sc.nextInt());
-                                        sc.nextLine();
-                                        System.out.print("Descrição do recurso: ");
-                                        recurso.setDescricao(sc.nextLine());
-
-                                        recurso.setEvento(eventoSelecionado);
-                                        objRecursoDAO.inserir(recurso);
-
-                                        System.out.println("\nRecurso inserido com sucesso! Deseja adicionar outro?");
-                                        System.out.println("1 - Sim");
-                                        System.out.println("2 - Não");
-                                        opcaoRecurso = sc.nextInt();
-                                        sc.nextLine();
-                                    }
-                                } else {
-                                    System.out.println("Evento não encontrado.");
-                                }
-                            }
-                            break;
-                        }
-
-                        case 6: {
-                            List<Recurso> recursos = objRecursoDAO.listar();
-                            if (recursos.isEmpty()) {
-                                System.out.println("Nenhum recurso encontrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Recursos ===");
-                                for (Recurso recurso : recursos) {
-                                    System.out.println("ID: " + recurso.getId() + " - Nome: " + recurso.getNome());
-                                }
-
-                                System.out.print("\nDigite o ID do recurso que deseja editar: ");
-                                int id = sc.nextInt();
-                                sc.nextLine();
-
-                                Recurso recurso = objRecursoDAO.buscarPorId(id);
-
-                                if (recurso != null) {
-                                    System.out.println("Editando o recurso: " + recurso.getNome());
-
-                                    System.out.print("Novo nome (anterior: " + recurso.getNome() + "): ");
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("Digite o ID do evento que deseja adicionar recurso: ");
+                            int idEvento = sc.nextInt();
+                            sc.nextLine();
+                            Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
+                            if (eventoSelecionado != null) {
+                                int opcaoRecurso = 1;
+                                while (opcaoRecurso == 1) {
+                                    Recurso recurso = new Recurso();
+                                    System.out.print("Nome do recurso: ");
                                     recurso.setNome(sc.nextLine());
-
-                                    System.out.print("Nova quantidade (anterior: " + recurso.getQuantidade() + "): ");
+                                    System.out.print("Quantidade necessária: ");
                                     recurso.setQuantidade(sc.nextInt());
                                     sc.nextLine();
-
-                                    System.out.print("Nova descrição (anterior: " + recurso.getDescricao() + "): ");
+                                    System.out.print("Descrição do recurso: ");
                                     recurso.setDescricao(sc.nextLine());
 
-                                    objRecursoDAO.atualizar(recurso);
-                                    System.out.println("\nRecurso atualizado com sucesso!");
-                                } else {
-                                    System.out.println("Recurso não encontrado.");
-                                }
-                            }
-                            break;
-                        }
+                                    recurso.setEvento(eventoSelecionado);
+                                    objRecursoDAO.inserir(recurso);
 
-                        case 7: {
-                            List<Recurso> recursos = objRecursoDAO.listar();
-
-                            if (recursos.isEmpty()) {
-                                System.out.println("Nenhum recurso cadastrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Recursos ===");
-                                for (Recurso recurso : recursos) {
-                                    System.out.println("ID: " + recurso.getId() +
-                                            ", Nome: " + recurso.getNome() +
-                                            ", Evento: " + recurso.getEvento().getTitulo());
-                                }
-
-                                System.out.print("\nDigite o ID do recurso que deseja excluir: ");
-                                int idExcluir = sc.nextInt();
-                                sc.nextLine();
-
-                                Recurso recurso = objRecursoDAO.buscarPorId(idExcluir);
-                                if (recurso != null) {
-                                    System.out.print("Tem certeza que deseja excluir o recurso '" + recurso.getNome() + "'? (s/n): ");
-                                    String confirmacao = sc.nextLine();
-                                    if (confirmacao.equalsIgnoreCase("s")) {
-                                        objRecursoDAO.excluir(idExcluir);
-                                        System.out.println("Recurso excluído com sucesso.");
-                                    } else {
-                                        System.out.println("Exclusão cancelada.");
-                                    }
-                                } else {
-                                    System.out.println("Recurso não encontrado.");
-                                }
-                            }
-                            break;
-                        }
-
-                        case 8: {
-                            List<Evento> eventos = objEventoDAO.listar();
-
-                            if (eventos.isEmpty()) {
-                                System.out.println("Nenhum evento cadastrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Eventos ===");
-                                for (Evento evento : eventos) {
-                                    System.out.println("ID: " + evento.getId() + ", Título: " + evento.getTitulo());
-                                }
-
-                                System.out.print("\nDigite o ID do evento para ver os recursos: ");
-                                int idEvento = sc.nextInt();
-                                sc.nextLine();
-
-                                Evento evento = objEventoDAO.buscarPorId(idEvento);
-                                if (evento != null) {
-                                    List<Recurso> recursos = objRecursoDAO.listar();
-                                    boolean encontrou = false;
-
-                                    System.out.println("\n=== Recursos do Evento: " + evento.getTitulo() + " ===");
-                                    for (Recurso recurso : recursos) {
-                                        if (recurso.getEvento().getId() == evento.getId()) {
-                                            encontrou = true;
-                                            System.out.println("ID: " + recurso.getId() +
-                                                    ", Nome: " + recurso.getNome() +
-                                                    ", Quantidade: " + recurso.getQuantidade() +
-                                                    ", Descrição: " + recurso.getDescricao());
-                                        }
-                                    }
-
-                                    if (!encontrou) {
-                                        System.out.println("Nenhum recurso associado a este evento.");
-                                    }
-
-                                } else {
-                                    System.out.println("Evento não encontrado.");
-                                }
-                            }
-                            break;
-                        }
-
-                        case 9: {
-                            List<Evento> eventos = objEventoDAO.listar();
-                            if (eventos.isEmpty()) {
-                                System.out.println("Nenhum evento cadastrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Eventos ===");
-                                for (Evento evento : eventos) {
-                                    System.out.println("ID: " + evento.getId() +
-                                            ", Título: " + evento.getTitulo());
-                                }
-
-                                System.out.print("Digite o ID do evento que deseja adicionar atração: ");
-                                int idEvento = sc.nextInt();
-                                sc.nextLine();
-
-                                Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
-                                if (eventoSelecionado != null) {
-                                    int opcaoAtracao = 1;
-                                    while (opcaoAtracao == 1) {
-                                        Atracao atracao = new Atracao();
-                                        System.out.print("Nome da atracao: ");
-                                        atracao.setNome(sc.nextLine());
-                                        System.out.print("Tipo da atracao: ");
-                                        atracao.setTipo(sc.nextLine());
-                                        System.out.print("Horário da atração(00:00): ");
-                                        atracao.setHorario(sc.nextLine());
-
-                                        atracao.setEvento(eventoSelecionado);
-                                        objAtracaoDAO.inserir(atracao);
-
-                                        System.out.println("\nAtração inserida com sucesso! Deseja adicionar outra?");
-                                        System.out.println("1 - Sim");
-                                        System.out.println("2 - Não");
-                                        opcaoAtracao = sc.nextInt();
-                                        sc.nextLine();
-                                    }
-                                } else {
-                                    System.out.println("Evento não encontrado.");
-                                }
-                            }
-                            break;
-                        }
-
-                        case 10: {
-                            System.out.print("Digite o ID do evento que deseja editar o endereço: ");
-                            int id = sc.nextInt();
-                            sc.nextLine();
-
-                            Evento evento = objEventoDAO.buscarPorId(id);
-                            if (evento != null) {
-                                Endereco endereco = objEnderecoDAO.buscarPorEventoId(id);
-                                if (endereco != null) {
-                                    System.out.print("Novo estado (anterior: " + endereco.getEstado() + "): ");
-                                    endereco.setEstado(sc.nextLine());
-                                    System.out.print("Nova cidade (anterior: " + endereco.getCidade() + "): ");
-                                    endereco.setCidade(sc.nextLine());
-                                    System.out.print("Nova rua (anterior: " + endereco.getRua() + "): ");
-                                    endereco.setRua(sc.nextLine());
-                                    System.out.print("Novo número (anterior: " + endereco.getNumero() + "): ");
-                                    endereco.setNumero(sc.nextLine());
-                                    System.out.print("Nova lotação (anterior: " + endereco.getLotacao() + "): ");
-                                    endereco.setLotacao(sc.nextInt());
+                                    System.out.println("\nRecurso inserido com sucesso! Deseja adicionar outro?");
+                                    System.out.println("1 - Sim");
+                                    System.out.println("2 - Não");
+                                    opcaoRecurso = sc.nextInt();
                                     sc.nextLine();
-
-                                    endereco.setEvento(evento); // mantém a referência ao evento
-                                    objEnderecoDAO.atualizar(endereco);
-                                    System.out.println("Endereço do evento atualizado com sucesso!");
-                                } else {
-                                    System.out.println("Endereço não encontrado para este evento.");
                                 }
                             } else {
                                 System.out.println("Evento não encontrado.");
@@ -585,7 +398,124 @@ public class Main {
                             break;
                         }
 
-                        case 11: {
+                        case 6: {
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("\nDigite o ID do recurso que deseja editar: ");
+                            int id = sc.nextInt();
+                            sc.nextLine();
+
+                            Recurso recurso = objRecursoDAO.buscarPorId(id);
+
+                            if (recurso != null) {
+                                System.out.println("Editando o recurso: " + recurso.getNome());
+
+                                System.out.print("Novo nome (anterior: " + recurso.getNome() + "): ");
+                                recurso.setNome(sc.nextLine());
+
+                                System.out.print("Nova quantidade (anterior: " + recurso.getQuantidade() + "): ");
+                                recurso.setQuantidade(sc.nextInt());
+                                sc.nextLine();
+
+                                System.out.print("Nova descrição (anterior: " + recurso.getDescricao() + "): ");
+                                recurso.setDescricao(sc.nextLine());
+
+                                objRecursoDAO.atualizar(recurso);
+                                System.out.println("\nRecurso atualizado com sucesso!");
+                            } else {
+                                System.out.println("Recurso não encontrado.");
+                            }
+                            break;
+                        }
+
+                        case 7: {
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("\nDigite o ID do recurso que deseja excluir: ");
+                            int idExcluir = sc.nextInt();
+                            sc.nextLine();
+
+                            Recurso recurso = objRecursoDAO.buscarPorId(idExcluir);
+                            if (recurso != null) {
+                                System.out.print("Tem certeza que deseja excluir o recurso '" + recurso.getNome() + "'? (s/n): ");
+                                String confirmacao = sc.nextLine();
+                                if (confirmacao.equalsIgnoreCase("s")) {
+                                    objRecursoDAO.excluir(idExcluir);
+                                    System.out.println("Recurso excluído com sucesso.");
+                                } else {
+                                    System.out.println("Exclusão cancelada.");
+                                }
+                            } else {
+                                System.out.println("Recurso não encontrado.");
+                            }
+                            break;
+                        }
+
+                        case 8: {
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("\nDigite o ID do evento para ver os recursos: ");
+                            int idEvento = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento evento = objEventoDAO.buscarPorId(idEvento);
+                            if (evento != null) {
+                                List<Recurso> recursos = objRecursoDAO.listar();
+                                boolean encontrou = false;
+
+                                System.out.println("\n=== Recursos do Evento: " + evento.getTitulo() + " ===");
+                                for (Recurso recurso : recursos) {
+                                    if (recurso.getEvento().getId() == evento.getId()) {
+                                        encontrou = true;
+                                        System.out.println("ID: " + recurso.getId() +
+                                                ", Nome: " + recurso.getNome() +
+                                                ", Quantidade: " + recurso.getQuantidade() +
+                                                ", Descrição: " + recurso.getDescricao());
+                                    }
+                                }
+
+                                if (!encontrou) {
+                                    System.out.println("Nenhum recurso associado a este evento.");
+                                }
+
+                            } else {
+                                System.out.println("Evento não encontrado.");
+                            }
+                            break;
+                        }
+
+                        case 9: {
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("Digite o ID do evento que deseja adicionar atração: ");
+                            int idEvento = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento eventoSelecionado = objEventoDAO.buscarPorId(idEvento);
+                            if (eventoSelecionado != null) {
+                                int opcaoAtracao = 1;
+                                while (opcaoAtracao == 1) {
+                                    Atracao atracao = new Atracao();
+                                    System.out.print("Nome da atracao: ");
+                                    atracao.setNome(sc.nextLine());
+                                    System.out.print("Tipo da atracao: ");
+                                    atracao.setTipo(sc.nextLine());
+                                    System.out.print("Horário da atração(00:00): ");
+                                    atracao.setHorario(sc.nextLine());
+
+                                    atracao.setEvento(eventoSelecionado);
+                                    objAtracaoDAO.inserir(atracao);
+
+                                    System.out.println("\nAtração inserida com sucesso! Deseja adicionar outra?");
+                                    System.out.println("1 - Sim");
+                                    System.out.println("2 - Não");
+                                    opcaoAtracao = sc.nextInt();
+                                    sc.nextLine();
+                                }
+                            } else {
+                                System.out.println("Evento não encontrado.");
+                            }
+                            break;
+                        }
+
+                        case 10: {
+                            listarEventosDoUsuarioLogado();
                             System.out.print("Digite o ID do evento para listar as atrações: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -633,7 +563,8 @@ public class Main {
                             break;
                         }
 
-                        case 12: {
+                        case 11: {
+                            listarEventosDoUsuarioLogado();
                             System.out.print("Digite o ID do evento para listar as atrações: ");
                             int idEvento = sc.nextInt();
                             sc.nextLine();
@@ -678,9 +609,9 @@ public class Main {
                             break;
                         }
 
-                        case 13: {
+                        case 12: {
                             String sair = "n";
-                            while(sair == "n") {
+                            while (sair == "n") {
                                 List<Evento> eventos = objEventoDAO.listar();
                                 if (eventos.isEmpty()) {
                                     System.out.println("Nenhum evento cadastrado.");
@@ -719,6 +650,40 @@ public class Main {
                                 }
                                 System.out.println("Deseja listar atrações de outro evento? (s/n): ");
                                 sair = sc.nextLine();
+                            }
+                            break;
+                        }
+
+                        case 13: {
+                            listarEventosDoUsuarioLogado();
+                            System.out.print("Digite o ID do evento que deseja editar o endereço: ");
+                            int id = sc.nextInt();
+                            sc.nextLine();
+
+                            Evento evento = objEventoDAO.buscarPorId(id);
+                            if (evento != null) {
+                                Endereco endereco = objEnderecoDAO.buscarPorEventoId(id);
+                                if (endereco != null) {
+                                    System.out.print("Novo estado (anterior: " + endereco.getEstado() + "): ");
+                                    endereco.setEstado(sc.nextLine());
+                                    System.out.print("Nova cidade (anterior: " + endereco.getCidade() + "): ");
+                                    endereco.setCidade(sc.nextLine());
+                                    System.out.print("Nova rua (anterior: " + endereco.getRua() + "): ");
+                                    endereco.setRua(sc.nextLine());
+                                    System.out.print("Novo número (anterior: " + endereco.getNumero() + "): ");
+                                    endereco.setNumero(sc.nextLine());
+                                    System.out.print("Nova lotação (anterior: " + endereco.getLotacao() + "): ");
+                                    endereco.setLotacao(sc.nextInt());
+                                    sc.nextLine();
+
+                                    endereco.setEvento(evento); // mantém a referência ao evento
+                                    objEnderecoDAO.atualizar(endereco);
+                                    System.out.println("Endereço do evento atualizado com sucesso!");
+                                } else {
+                                    System.out.println("Endereço não encontrado para este evento.");
+                                }
+                            } else {
+                                System.out.println("Evento não encontrado.");
                             }
                             break;
                         }
