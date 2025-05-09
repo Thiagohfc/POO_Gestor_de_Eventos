@@ -150,15 +150,24 @@ public class Main {
                 System.out.println("1 - Listar Usuários");
                 System.out.println("2 - Editar Usuário");
                 System.out.println("3 - Excluir Usuário");
-                System.out.println("4 - Sair");
+                System.out.println("4 - Voltar");
                 System.out.print("Escolha uma opção: ");
                 int opc = sc.nextInt();
                 sc.nextLine();
                 return gerenciarUsuarios(opc);
             case 2:
-                System.out.println("Gerenciando eventos...");
-                break;
+                System.out.println("===== MENU Gerenciar Eventos =====");
+                System.out.println("1 - Listar Eventos");
+                System.out.println("2 - Editar Evento");
+                System.out.println("3 - Excluir Evento");
+                System.out.println("4 - Voltar");
+                System.out.println("Escolha uma opção: ");
+                int opc2 = sc.nextInt();
+                sc.nextLine();
+                return gerenciarEventos(opc2);
             case 3:
+                System.out.println("Saindo...");
+                usuarioLogado = null;
                 return false;
             default:
                 System.out.println("Opção inválida. Tente novamente.");
@@ -717,6 +726,79 @@ public class Main {
         }
     }
 
+    private static boolean listarEventos(){
+        List<Evento> eventos = objEventoDAO.listar();
+        if (eventos.isEmpty()) {
+            System.out.println("Nenhum evento cadastrado.");
+            return false;
+        } else {
+            System.out.println("\n=== Lista de Eventos ===");
+            for (Evento evento : eventos) {
+                System.out.println("ID: " + evento.getId() +
+                        ", Título: " + evento.getTitulo() +
+                        ", Descrição: " + evento.getDescricao() +
+                        ", Tipo: " + evento.getTipo() +
+                        ", Data: " + new SimpleDateFormat("dd/MM/yyyy").format(evento.getData()) +
+                        ", Usuário: " + evento.getUsuario().getNome());
+            }
+            return true;
+        }
+    }
+
+    private static boolean listarEnderecos(){
+        List<Endereco> enderecos = objEnderecoDAO.listar();
+        if (enderecos.isEmpty()) {
+            System.out.println("Nenhum endereco cadastrado.");
+            return false;
+        } else {
+            System.out.println("\n=== Lista de Enderecos ===");
+            for (Endereco endereco : enderecos) {
+                System.out.println("ID: " + endereco.getEstado() +
+                        ", Cidade: " + endereco.getCidade() +
+                        ", Rua :" + endereco.getRua() +
+                        ", Número: " + endereco.getNumero() +
+                        ", Loatção: " + endereco.getLotacao() +
+                        ", Evento: " + endereco.getEvento().getTitulo());
+            }
+            return true;
+        }
+    }
+
+    private static boolean listarRecursos(){
+        List<Recurso> recursos = objRecursoDAO.listar();
+        if (recursos.isEmpty()) {
+            System.out.println("Nenhum recurso cadastrado.");
+            return false;
+        } else {
+            System.out.println("\n=== Lista de Recursos ===");
+            for (Recurso recurso : recursos) {
+                System.out.println("ID: " + recurso.getId() +
+                        ", Nome: " + recurso.getNome() +
+                        ", Quantidade: " + recurso.getQuantidade() +
+                        ", Descrição: " + recurso.getDescricao() +
+                        ", Evento: " + recurso.getEvento().getTitulo());
+            }
+            return true;
+        }
+    }
+
+    private static boolean listarAtracoes(){
+        List<Atracao> atracoes = objAtracaoDAO.listar();
+        if (atracoes.isEmpty()) {
+            System.out.println("Nenhuma atração cadastrada.");
+            return false;
+        } else {
+            System.out.println("\n=== Lista de Atrações ===");
+            for (Atracao atraco : atracoes) {
+                System.out.println("ID: " + atraco.getNome() +
+                        ", Tipo: " + atraco.getTipo() +
+                        ", Horário: " + atraco.getHorario() +
+                        ", Evento :" + atraco.getEvento().getTitulo());
+            }
+            return true;
+        }
+    }
+
     private static void editarUsuario() {
         System.out.println("\n===== EDITAR USUÁRIO =====");
         System.out.print("Digite o ID do usuário a editar: ");
@@ -749,6 +831,155 @@ public class Main {
         System.out.println("Usuário atualizado com sucesso!");
     }
 
+    private static void editarEvento() {
+        if (!listarEventos()) {
+            return;
+        }
+        System.out.print("Digite o ID do evento para continuar...");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        Evento eventoExistente = objEventoDAO.buscarPorId(id);
+        if (eventoExistente == null){
+            System.out.println("Evento não encontrado!");
+            return;
+        }
+
+        int opc = 0;
+
+        do {
+            System.out.println("1 - Atualizar eventos");
+            System.out.println("2 - Atualizar endereços");
+            System.out.println("3 - Atualizar recursos");
+            System.out.println("4 - Atualizar atrações");
+            System.out.println("5 - Voltar");
+
+            System.out.println("Escolha uma das opções para continuar...");
+            opc = sc.nextInt();
+            sc.nextLine();
+            switch (opc) {
+                case 1:
+                    System.out.print("Novo Titulo (" + eventoExistente.getTitulo() + "): ");
+                    String novoTitulo = sc.nextLine();
+                    if (!novoTitulo.isEmpty()) eventoExistente.setTitulo(novoTitulo);
+
+                    System.out.print("Nova Descrição (" + eventoExistente.getDescricao() + "): ");
+                    String novaDesc = sc.nextLine();
+                    if (!novaDesc.isEmpty()) eventoExistente.setDescricao(novaDesc);
+
+                    System.out.print("Novo Tipo (" + eventoExistente.getTipo() + "): ");
+                    String novoTipo = sc.nextLine();
+                    if (!novoTipo.isEmpty()) eventoExistente.setTipo(novoTipo);
+
+                    System.out.print("Nova Data (dd/MM/yyyy) (" + eventoExistente.getData() + "): ");
+                    try {
+                        String dataStr = sc.nextLine();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                        Date data = sdf.parse(dataStr);
+                        if (!dataStr.isEmpty()) eventoExistente.setData(data);
+                    } catch (Exception e) {
+                        System.out.println("Data inválida! Usando data atual.");
+                        eventoExistente.setData(new Date());
+                    }
+
+                    objEventoDAO.atualizar(eventoExistente);
+                    System.out.println("Evento atualizado com sucesso!");
+                    break;
+                case 2:
+                    if (!listarEnderecos()){
+                        return;
+                    }
+
+                    System.out.println("Digite o ID do endereço para continuar...");
+                    int idEndereco = sc.nextInt();
+                    sc.nextLine();
+
+                    Endereco enderecoExistente = objEnderecoDAO.buscarPorId(idEndereco);
+                    if (enderecoExistente == null) {
+                        System.out.println("Endereço não encontrado!");
+                        return;
+                    }
+
+                    System.out.print("Novo Estado (anterior: " + enderecoExistente.getEstado() + "): ");
+                    enderecoExistente.setEstado(sc.nextLine());
+                    System.out.print("Nova Cidade (anterior: " + enderecoExistente.getCidade() + "): ");
+                    enderecoExistente.setCidade(sc.nextLine());
+                    System.out.print("Nova Rua (anterior: " + enderecoExistente.getRua() + "): ");
+                    enderecoExistente.setRua(sc.nextLine());
+                    System.out.print("Novo Número (anterior: " + enderecoExistente.getNumero() + "): ");
+                    enderecoExistente.setNumero(sc.nextLine());
+                    System.out.print("Nova Lotação (anterior: " + enderecoExistente.getLotacao() + "): ");
+                    enderecoExistente.setLotacao(sc.nextInt());
+                    sc.nextLine();
+
+                    enderecoExistente.setEvento(eventoExistente);
+                    objEnderecoDAO.atualizar(enderecoExistente);
+                    System.out.println("Endereço do evento atualizado com sucesso!");
+                    break;
+                case 3:
+                    if (!listarRecursos()){
+                        return;
+                    }
+
+                    System.out.println("Digite o ID do recurso para continuar...");
+                    int idRecurso = sc.nextInt();
+                    sc.nextLine();
+
+                    Recurso recusoExistente = objRecursoDAO.buscarPorId(idRecurso);
+                    if (recusoExistente == null) {
+                        System.out.println("Recurso não encontrado!");
+                        return;
+                    }
+
+                    System.out.println("Novo Nome (anterior: " + recusoExistente.getNome() + "): ");
+                    recusoExistente.setNome(sc.nextLine());
+                    System.out.println("Nova Quantidade (anterior: " + recusoExistente.getQuantidade());
+                    recusoExistente.setQuantidade(sc.nextInt());
+                    System.out.println("Nova descrição (anterior: " + recusoExistente.getDescricao());
+                    recusoExistente.setDescricao(sc.nextLine());
+                    sc.nextLine();
+
+                    recusoExistente.setEvento(eventoExistente);
+                    objRecursoDAO.atualizar(recusoExistente);
+                    System.out.println("Recurso atualizado com sucesso!");
+                    break;
+                case 4:
+                    if (!listarAtracoes()){
+                        return;
+                    }
+
+                    System.out.println("Digite o ID do tracao para continuar...");
+                    int idTracao = sc.nextInt();
+                    sc.nextLine();
+
+                    Atracao atracaoExistente = objAtracaoDAO.buscarPorId(idTracao);
+                    if (atracaoExistente == null) {
+                        System.out.println("Atração não encontrada!");
+                        return;
+                    }
+
+                    System.out.println("Novo Nome: " + atracaoExistente.getNome());
+                    atracaoExistente.setNome(sc.nextLine());
+                    System.out.println("Novo Tipo: " + atracaoExistente.getTipo());
+                    atracaoExistente.setTipo(sc.nextLine());
+                    System.out.println("Novo Horário: " + atracaoExistente.getHorario());
+                    atracaoExistente.setHorario(sc.nextLine());
+                    sc.nextLine();
+
+                    atracaoExistente.setEvento(eventoExistente);
+                    objAtracaoDAO.atualizar(atracaoExistente);
+                    System.out.println("Atração atualizado com sucesso!");
+                    break;
+                case 5:
+                    System.out.println("Voltando ao menu anterior...");
+                    return;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        }while (opc != 5);
+
+    }
+
     private static void excluirUsuario() {
         System.out.println("\n===== EXCLUIR USUÁRIO =====");
         System.out.print("Digite o ID do usuário a excluir: ");
@@ -765,19 +996,88 @@ public class Main {
         System.out.println("Usuário excluído com sucesso!");
     }
 
+    private static void excluirEvento() {
+        if (!listarEventos()) {
+            return;
+        }
+        System.out.println("\n===== EXCLUIR EVENTO =====");
+        System.out.print("Digite o ID do evento para excluir: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        Evento eventoExistente = objEventoDAO.buscarPorId(id);
+        if (eventoExistente == null){
+            System.out.println("Evento não encontrado!");
+            return;
+        }
+
+        objEventoDAO.excluir(id);
+        System.out.println("Evento excluído com sucesso!");
+    }
+
     private static boolean gerenciarUsuarios(int opcao) {
         switch (opcao) {
             case 1:
                 listarUsuarios();
+                processarOpcaoAdmin(1);
                 break;
             case 2:
                 editarUsuario();
+                System.out.println("Deseja editar outro usuário? (s/n): ");
+                if (sc.nextLine().equalsIgnoreCase("s")) {
+                    gerenciarUsuarios(2);
+                }else {
+                    System.out.println("Voltando ao menu anterior...");
+                    processarOpcaoAdmin(1);
+                }
                 break;
             case 3:
                 excluirUsuario();
+                System.out.println("Deseja excluir outro usuário? (s/n): ");
+                if (sc.nextLine().equalsIgnoreCase("s")) {
+                    gerenciarUsuarios(3);
+                }else{
+                    System.out.println("Voltando ao menu anterior...");
+                    processarOpcaoAdmin(1);
+                }
                 break;
             case 4:
-                System.out.println("Saindo do menu Admin...");
+                System.out.println("Voltando ao menu anterior...");
+                return false;
+            default:
+                System.out.println("Opção inválida. Tente novamente.");
+        }
+        return true;
+    }
+
+    private static boolean gerenciarEventos(int opcao) {
+        switch (opcao) {
+            case 1:
+                listarEventos();
+                processarOpcaoAdmin(2);
+                break;
+            case 2:
+                editarEvento();
+                System.out.println("Deseja editar outro evento? (s/n): ");
+                if (sc.nextLine().equalsIgnoreCase("s")) {
+                    gerenciarEventos(2);
+                }else {
+                    System.out.println("Voltando ao menu anterior...");
+                    processarOpcaoAdmin(2);
+                }
+                break;
+            case 3:
+                excluirEvento();
+                System.out.println("Deseja excluir outro evento? (s/n): ");
+                if (sc.nextLine().equalsIgnoreCase("s")) {
+                    gerenciarEventos(3);
+                }else{
+                    System.out.println("Voltando ao menu anterior...");
+                    processarOpcaoAdmin(2);
+                }
+                break;
+            case 4:
+                System.out.println("Voltando ao menu anterior...");
                 return false;
             default:
                 System.out.println("Opção inválida. Tente novamente.");
@@ -797,7 +1097,7 @@ public class Main {
             System.out.println("6 - Voltar");
             System.out.print("Escolha o que deseja editar: ");
             opcao = sc.nextInt();
-            sc.nextLine(); // limpar buffer
+            sc.nextLine();
 
             if (opcao >= 1 && opcao <= 4) {
                 System.out.print("Digite sua senha atual para confirmar: ");
