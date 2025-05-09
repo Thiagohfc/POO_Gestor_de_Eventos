@@ -349,21 +349,29 @@ public class Main {
 
                         case 4: {
                             List<Evento> eventos = objEventoDAO.listar();
-                            if (eventos.isEmpty()) {
-                                System.out.println("Nenhum evento cadastrado.");
-                            } else {
-                                System.out.println("\n=== Lista de Eventos ===");
-                                for (Evento evento : eventos) {
+                            boolean encontrou = false;
+
+                            System.out.println("\n=== SEUS EVENTOS CADASTRADOS ===");
+
+                            for (Evento evento : eventos) {
+                                if (evento.getUsuario().getId() == usuarioLogado.getId()) {
                                     System.out.println("ID: " + evento.getId() +
                                             ", Título: " + evento.getTitulo() +
                                             ", Descrição: " + evento.getDescricao() +
                                             ", Tipo: " + evento.getTipo() +
                                             ", Data: " + new SimpleDateFormat("dd/MM/yyyy").format(evento.getData()) +
                                             ", Usuário: " + evento.getUsuario().getNome());
+                                    encontrou = true;
                                 }
                             }
+
+                            if (!encontrou) {
+                                System.out.println("Você ainda não possui eventos cadastrados.");
+                            }
+
                             break;
                         }
+
 
                         case 5: {
                             listarEventosDoUsuarioLogado();
