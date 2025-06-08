@@ -43,7 +43,9 @@ public abstract class Usuario {
     public void setTipoUsuario(String tipoUsuario) { this.tipoUsuario = tipoUsuario; }
 
     // Método abstrato para forçar cada tipo de usuário a definir seu tipo
-    public abstract String getTipoUsuario();
+    public String getTipoUsuario() {
+        return this.tipoUsuario;
+    }
 
     public abstract void exibirMenu();
 }

@@ -6,15 +6,11 @@ public class UsuarioAdmin extends Usuario {
 
     public UsuarioAdmin() {
         super();
+        this.setTipoUsuario("admin");
     }
 
     public UsuarioAdmin(int id, String nome, int idade, String cpf, String email, String senha, String tipoUsuario) {
         super(id, nome, idade, cpf, email, senha, tipoUsuario);
-    }
-
-    @Override
-    public String getTipoUsuario() {
-        return "admin";
     }
 
     @Override

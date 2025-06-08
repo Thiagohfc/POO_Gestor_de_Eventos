@@ -1,5 +1,7 @@
 package view;
 
+import model.Usuario; // IMPORTAÇÃO NECESSÁRIA
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
@@ -10,7 +12,8 @@ public class JanelaPrincipal extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel painelPrincipal;
-    private JLabel labelStatus; // Rótulo para a barra de status
+    private JLabel labelStatus;
+    private Usuario usuarioLogado; // <<< CAMPO ADICIONADO
 
     public JanelaPrincipal() {
         // --- ETAPA 0: Define o Look and Feel para o visual nativo do SO ---
@@ -23,21 +26,18 @@ public class JanelaPrincipal extends JFrame {
         // --- ETAPA 1: Configurações da Janela Principal ---
         super("EventSys - Sistema de Gerenciamento de Eventos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(800, 600)); // Define um tamanho mínimo
+        setMinimumSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout()); // Define o layout principal como BorderLayout
+        setLayout(new BorderLayout());
 
         // --- ETAPA 2: Criação dos Componentes da UI ---
         JMenuBar menuBar = criarBarraDeMenu();
         JPanel statusBar = criarBarraDeStatus();
 
-        // O painel principal com CardLayout que já tínhamos
         cardLayout = new CardLayout();
         painelPrincipal = new JPanel(cardLayout);
 
         // --- ETAPA 3: Adiciona as Telas (JPanels) ao CardLayout ---
-        // Agora passamos a instância da própria janela para as telas filhas.
-        // Isso permite que elas chamem métodos da JanelaPrincipal, como o de atualizar a barra de status.
         TelaLogin telaLogin = new TelaLogin(this);
         TelaAdmin telaAdmin = new TelaAdmin(this);
         TelaComum telaComum = new TelaComum(this);
@@ -47,9 +47,9 @@ public class JanelaPrincipal extends JFrame {
         painelPrincipal.add(telaComum, "comum");
 
         // --- ETAPA 4: Montagem da Janela ---
-        setJMenuBar(menuBar); // Adiciona a barra de menus ao topo
-        add(painelPrincipal, BorderLayout.CENTER); // Adiciona o painel com as telas ao centro
-        add(statusBar, BorderLayout.SOUTH); // Adiciona a barra de status ao rodapé
+        setJMenuBar(menuBar);
+        add(painelPrincipal, BorderLayout.CENTER);
+        add(statusBar, BorderLayout.SOUTH);
 
         // --- ETAPA 5: Inicia na tela de login ---
         cardLayout.show(painelPrincipal, "login");
@@ -60,14 +60,11 @@ public class JanelaPrincipal extends JFrame {
 
     private JMenuBar criarBarraDeMenu() {
         JMenuBar menuBar = new JMenuBar();
-
-        // Menu "Arquivo"
         JMenu menuArquivo = new JMenu("Arquivo");
         JMenuItem itemSair = new JMenuItem("Sair");
         itemSair.addActionListener(e -> System.exit(0));
         menuArquivo.add(itemSair);
 
-        // Menu "Ajuda"
         JMenu menuAjuda = new JMenu("Ajuda");
         JMenuItem itemSobre = new JMenuItem("Sobre");
         itemSobre.addActionListener(e ->
@@ -85,18 +82,14 @@ public class JanelaPrincipal extends JFrame {
 
     private JPanel criarBarraDeStatus() {
         JPanel statusBar = new JPanel(new BorderLayout());
-        statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED)); // Efeito de borda
-
-        // Rótulo para o texto principal
+        statusBar.setBorder(new BevelBorder(BevelBorder.LOWERED));
         labelStatus = new JLabel("Pronto.");
-        labelStatus.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5)); // Margem interna
+        labelStatus.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
         statusBar.add(labelStatus, BorderLayout.CENTER);
 
-        // Rótulo para a data/hora
         JLabel labelDataHora = new JLabel();
         labelDataHora.setHorizontalAlignment(SwingConstants.RIGHT);
         labelDataHora.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
-        // Timer para atualizar a data/hora a cada segundo
         Timer timer = new Timer(1000, e -> {
             labelDataHora.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
         });
@@ -108,27 +101,24 @@ public class JanelaPrincipal extends JFrame {
 
     // --- MÉTODOS PÚBLICOS PARA CONTROLE DA JANELA ---
 
-    /**
-     * Altera o texto exibido na barra de status.
-     * @param texto O texto a ser exibido.
-     */
     public void setStatusBarText(String texto) {
         labelStatus.setText(texto);
     }
 
-    /**
-     * Retorna o painel principal (container das telas).
-     * @return O JPanel principal.
-     */
     public JPanel getPainelPrincipal() {
         return painelPrincipal;
     }
 
-    /**
-     * Retorna o CardLayout para permitir a troca de telas.
-     * @return O CardLayout da janela.
-     */
     public CardLayout getCardLayout() {
         return cardLayout;
+    }
+
+    // <<< MÉTODOS ADICIONADOS PARA GERENCIAR O USUÁRIO LOGADO >>>
+    public void setUsuarioLogado(Usuario usuario) {
+        this.usuarioLogado = usuario;
+    }
+
+    public Usuario getUsuarioLogado() {
+        return this.usuarioLogado;
     }
 }
