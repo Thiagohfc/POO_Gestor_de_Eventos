@@ -21,12 +21,10 @@ public class TelaAdmin extends JPanel {
         setLayout(new BorderLayout(20, 20));
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- TÍTULO (NORTE) ---
         JLabel labelTitulo = new JLabel("Painel Administrativo", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("SansSerif", Font.BOLD, 28));
         add(labelTitulo, BorderLayout.NORTH);
 
-        // --- PAINEL DE BOTÕES (CENTRO) ---
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -44,13 +42,11 @@ public class TelaAdmin extends JPanel {
 
         add(painelBotoes, BorderLayout.CENTER);
 
-        // --- LOGOUT (SUL) ---
         JPanel painelLogout = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton botaoLogout = new JButton("Sair (Logout)");
         painelLogout.add(botaoLogout);
         add(painelLogout, BorderLayout.SOUTH);
 
-        // --- AÇÕES DOS BOTÕES ---
         botaoGerenciarUsuarios.addActionListener(e -> abrirDialogoGerenciarUsuarios());
 
         botaoGerenciarEventos.addActionListener(e -> {
@@ -69,7 +65,6 @@ public class TelaAdmin extends JPanel {
         dialogo.setSize(700, 500);
         dialogo.setLayout(new BorderLayout(10, 10));
 
-        // --- Tabela de Usuários ---
         String[] colunas = {"ID", "Nome", "Email", "Tipo"};
         DefaultTableModel tableModel = new DefaultTableModel(colunas, 0) {
             @Override
@@ -84,7 +79,6 @@ public class TelaAdmin extends JPanel {
         JScrollPane scrollPane = new JScrollPane(tabelaUsuarios);
         dialogo.add(scrollPane, BorderLayout.CENTER);
 
-        // --- Painel de Botões de Ação ---
         JPanel painelAcoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         JButton botaoEditar = new JButton("Editar Selecionado");
         JButton botaoExcluir = new JButton("Excluir Selecionado");
@@ -94,7 +88,6 @@ public class TelaAdmin extends JPanel {
         painelAcoes.add(botaoAtualizar);
         dialogo.add(painelAcoes, BorderLayout.SOUTH);
 
-        // --- Ações dos Botões do Diálogo ---
         botaoAtualizar.addActionListener(e -> atualizarTabelaUsuarios(tableModel));
 
         botaoExcluir.addActionListener(e -> {
@@ -118,7 +111,6 @@ public class TelaAdmin extends JPanel {
             }
         });
 
-        // --- LÓGICA DE EDIÇÃO IMPLEMENTADA ---
         botaoEditar.addActionListener(e -> {
             int selectedRow = tabelaUsuarios.getSelectedRow();
             if (selectedRow >= 0) {
@@ -148,11 +140,9 @@ public class TelaAdmin extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Campos pré-preenchidos
         JTextField campoNome = new JTextField(usuario.getNome(), 20);
         JTextField campoEmail = new JTextField(usuario.getEmail(), 20);
 
-        // JComboBox para selecionar o tipo de usuário
         JComboBox<String> comboTipo = new JComboBox<>(new String[]{"comum", "admin"});
         comboTipo.setSelectedItem(usuario.getTipoUsuario());
 
@@ -171,7 +161,6 @@ public class TelaAdmin extends JPanel {
 
         botaoSalvar.addActionListener(e -> {
             try {
-                // Atualiza o objeto 'usuario' com os novos dados da tela de edição
                 usuario.setNome(campoNome.getText());
                 usuario.setEmail(campoEmail.getText());
                 usuario.setTipoUsuario((String) comboTipo.getSelectedItem());
@@ -179,16 +168,14 @@ public class TelaAdmin extends JPanel {
                 usuarioDAO.atualizarPerfilAdmin(usuario);
 
                 JOptionPane.showMessageDialog(dialogoEdicao, "Usuário atualizado com sucesso!");
-                atualizarTabelaUsuarios(tableModel); // Atualiza a tabela principal
-                dialogoEdicao.dispose(); // Fecha a janela de edição
+                atualizarTabelaUsuarios(tableModel);
+                dialogoEdicao.dispose();
 
             } catch (Exception ex) {
-                // Esta linha é muito importante, pois imprime o "rastro" completo do erro no terminal.
                 ex.printStackTrace();
 
-                // E esta mostra a mensagem principal do erro na tela, de forma mais clara.
                 JOptionPane.showMessageDialog(dialogoEdicao,
-                        "Ocorreu um erro ao atualizar:\n" + ex.getMessage(), // Usamos a mensagem da exceção
+                        "Ocorreu um erro ao atualizar:\n" + ex.getMessage(),
                         "Erro de Atualização",
                         JOptionPane.ERROR_MESSAGE);
             }

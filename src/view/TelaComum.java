@@ -25,28 +25,24 @@ public class TelaComum extends JPanel {
         this.usuarioDAO = new UsuarioDAO();
         this.criptografia = new Criptografia();
 
-        setLayout(new BorderLayout(20, 20)); // Layout principal com espaçamento
-        setBorder(new EmptyBorder(20, 20, 20, 20)); // Margem externa
+        setLayout(new BorderLayout(20, 20));
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // --- TÍTULO (NORTE) ---
         JLabel labelTitulo = new JLabel("Painel do Usuário", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("SansSerif", Font.BOLD, 28));
         add(labelTitulo, BorderLayout.NORTH);
 
-        // --- PAINEL DE BOTÕES (CENTRO) ---
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Botão Meus Dados
         JButton botaoMeusDados = new JButton("Meus Dados Pessoais");
         botaoMeusDados.setFont(new Font("SansSerif", Font.PLAIN, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
         painelBotoes.add(botaoMeusDados, gbc);
 
-        // Botão Gerenciar Eventos
         JButton botaoGerenciarEventos = new JButton("Gerenciar Meus Eventos");
         botaoGerenciarEventos.setFont(new Font("SansSerif", Font.PLAIN, 18));
         gbc.gridx = 0;
@@ -55,22 +51,19 @@ public class TelaComum extends JPanel {
 
         add(painelBotoes, BorderLayout.CENTER);
 
-        // --- LOGOUT (SUL) ---
         JPanel painelLogout = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton botaoLogout = new JButton("Sair (Logout)");
         painelLogout.add(botaoLogout);
         add(painelLogout, BorderLayout.SOUTH);
 
-        // --- AÇÕES DOS BOTÕES ---
         botaoMeusDados.addActionListener(e -> abrirDialogoMeusDados());
 
         botaoGerenciarEventos.addActionListener(e -> {
-            // TODO: Criar a tela de gerenciamento de eventos.
             JOptionPane.showMessageDialog(janela, "Esta tela ainda está em construção!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
         });
 
         botaoLogout.addActionListener(e -> {
-            janela.setUsuarioLogado(null); // Limpa o usuário logado
+            janela.setUsuarioLogado(null);
             janela.setStatusBarText("Aguardando login...");
             janela.getCardLayout().show(janela.getPainelPrincipal(), "login");
         });
@@ -90,16 +83,14 @@ public class TelaComum extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // --- Campos pré-preenchidos ---
         JTextField campoNome = new JTextField(usuarioLogado.getNome(), 20);
         JTextField campoIdade = new JTextField(String.valueOf(usuarioLogado.getIdade()), 20);
         JFormattedTextField campoCpf = criarCampoCpfComMascara();
         campoCpf.setText(usuarioLogado.getCpf());
-        // A linha .setEditable(false) foi removida daqui
 
         JTextField campoEmail = new JTextField(usuarioLogado.getEmail(), 20);
 
-        // --- Adicionando componentes à tela ---
+
         gbc.gridx = 0; gbc.gridy = 0; dialogo.add(new JLabel("Nome:"), gbc);
         gbc.gridx = 1; gbc.gridy = 0; dialogo.add(campoNome, gbc);
 
@@ -118,12 +109,10 @@ public class TelaComum extends JPanel {
 
         botaoSalvar.addActionListener(e -> {
             try {
-                // Atualiza os dados no objeto 'usuarioLogado'
                 usuarioLogado.setNome(campoNome.getText());
                 usuarioLogado.setIdade(Integer.parseInt(campoIdade.getText()));
                 usuarioLogado.setEmail(campoEmail.getText());
 
-                // --- LÓGICA PARA ATUALIZAR O CPF ---
                 String cpfSemMascara = campoCpf.getText().replaceAll("[^0-9]", "");
                 if (cpfSemMascara.length() != 11) {
                     JOptionPane.showMessageDialog(dialogo, "CPF inválido. Preencha todos os 11 dígitos.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
@@ -131,7 +120,6 @@ public class TelaComum extends JPanel {
                 }
                 usuarioLogado.setCpf(cpfSemMascara);
 
-                // Pede a senha para confirmar as alterações
                 JPasswordField campoSenhaConfirmacao = new JPasswordField();
                 int result = JOptionPane.showConfirmDialog(dialogo, campoSenhaConfirmacao, "Digite sua senha para confirmar", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
@@ -157,10 +145,7 @@ public class TelaComum extends JPanel {
         dialogo.setVisible(true);
     }
 
-    /**
-     * Cria e retorna um campo de texto formatado para CPF.
-     * @return Um JFormattedTextField com a máscara de CPF.
-     */
+
     private JFormattedTextField criarCampoCpfComMascara() {
         try {
             MaskFormatter mascaraCpf = new MaskFormatter("###.###.###-##");

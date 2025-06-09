@@ -14,16 +14,13 @@ import javax.swing.text.MaskFormatter;
 
 public class TelaLogin extends JPanel {
 
-    // Componentes da Interface Gráfica
     private JTextField campoEmail;
     private JPasswordField campoSenha;
     private JButton botaoLogin;
     private JButton botaoCadastro;
 
-    // Referência à janela principal para poder controlá-la
     private JanelaPrincipal janela;
 
-    // Componentes da Lógica de Negócio (seus DAOs e Utils)
     private UsuarioDAO usuarioDAO;
     private Criptografia criptografia;
 
@@ -32,12 +29,10 @@ public class TelaLogin extends JPanel {
         this.usuarioDAO = new UsuarioDAO();
         this.criptografia = new Criptografia();
 
-        // Configura o layout do painel
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Título da tela
         JLabel labelTitulo = new JLabel("Bem-vindo ao EventSys", SwingConstants.CENTER);
         labelTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
         gbc.gridx = 0;
@@ -46,7 +41,6 @@ public class TelaLogin extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(labelTitulo, gbc);
 
-        // Campo Email
         gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -57,7 +51,6 @@ public class TelaLogin extends JPanel {
         campoEmail = new JTextField(25);
         add(campoEmail, gbc);
 
-        // Campo Senha
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(new JLabel("Senha:"), gbc);
@@ -67,7 +60,6 @@ public class TelaLogin extends JPanel {
         campoSenha = new JPasswordField(25);
         add(campoSenha, gbc);
 
-        // Painel de botões
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         botaoLogin = new JButton("Entrar");
         botaoCadastro = new JButton("Cadastrar-se");
@@ -79,7 +71,6 @@ public class TelaLogin extends JPanel {
         gbc.gridwidth = 2;
         add(painelBotoes, gbc);
 
-        // --- AÇÕES DOS BOTÕES ---
         botaoLogin.addActionListener(e -> fazerLogin());
         campoSenha.addActionListener(e -> fazerLogin());
         botaoCadastro.addActionListener(e -> abrirDialogoCadastro());
@@ -98,8 +89,7 @@ public class TelaLogin extends JPanel {
         Usuario usuario = usuarioDAO.autenticar(email, senhaCriptografada);
 
         if (usuario != null) {
-            // --- ADEQUAÇÃO FINALIZADA ---
-            janela.setUsuarioLogado(usuario); // Guarda o usuário na sessão da janela principal
+            janela.setUsuarioLogado(usuario);
 
             janela.setStatusBarText("Login bem-sucedido! Bem-vindo(a), " + usuario.getNome() + "!");
 
