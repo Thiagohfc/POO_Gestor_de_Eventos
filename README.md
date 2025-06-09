@@ -21,7 +21,7 @@ Siga os passos abaixo para rodar o projeto na sua máquina.
 Primeiro, clone este repositório para o seu computador.
 
 ```bash
-git clone <https://github.com/Thiagohfc/POO_Gestor_de_Eventos.git>
+git clone (https://github.com/Thiagohfc/POO_Gestor_de_Eventos.git)
 ```
 ### 2. Acessar a Pasta do Projeto
 
