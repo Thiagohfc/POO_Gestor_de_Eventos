@@ -61,6 +61,11 @@ public class TelaComum extends JPanel {
         gbc.gridy = 1;
         painelBotoes.add(botaoGerenciarEventos, gbc);
 
+        JButton botaoGerenciarRecursos = new JButton("Gerenciar Recursos dos Eventos");
+        botaoGerenciarRecursos.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        gbc.gridx = 0; gbc.gridy = 2;
+        painelBotoes.add(botaoGerenciarRecursos, gbc);
+
         add(painelBotoes, BorderLayout.CENTER);
 
         JPanel painelLogout = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -71,6 +76,10 @@ public class TelaComum extends JPanel {
         botaoMeusDados.addActionListener(e -> abrirDialogoMeusDados());
 
         botaoGerenciarEventos.addActionListener(e -> abrirMenuEventos());
+
+        botaoGerenciarRecursos.addActionListener(e -> {
+            janela.getCardLayout().show(janela.getPainelPrincipal(), "recursos");
+        });
 
         botaoLogout.addActionListener(e -> {
             janela.setUsuarioLogado(null);

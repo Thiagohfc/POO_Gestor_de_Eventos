@@ -14,6 +14,7 @@ public class JanelaPrincipal extends JFrame {
     private JPanel painelPrincipal;
     private JLabel labelStatus;
     private Usuario usuarioLogado;
+    private TelaRecursos telaRecursos;
 
     public JanelaPrincipal() {
         try {
@@ -37,10 +38,12 @@ public class JanelaPrincipal extends JFrame {
         TelaLogin telaLogin = new TelaLogin(this);
         TelaAdmin telaAdmin = new TelaAdmin(this);
         TelaComum telaComum = new TelaComum(this);
+        TelaRecursos telaRecursos = new TelaRecursos(this);
 
         painelPrincipal.add(telaLogin, "login");
         painelPrincipal.add(telaAdmin, "admin");
         painelPrincipal.add(telaComum, "comum");
+        painelPrincipal.add(telaRecursos, "recursos");
 
         setJMenuBar(menuBar);
         add(painelPrincipal, BorderLayout.CENTER);
