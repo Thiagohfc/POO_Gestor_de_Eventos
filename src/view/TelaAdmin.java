@@ -2,21 +2,26 @@ package view;
 
 import dao.UsuarioDAO;
 import model.Usuario;
+import dao.EventoDAO;
+import model.Evento;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class TelaAdmin extends JPanel {
 
     private JanelaPrincipal janela;
     private UsuarioDAO usuarioDAO;
+    private EventoDAO eventoDAO;
 
     public TelaAdmin(JanelaPrincipal janela) {
         this.janela = janela;
         this.usuarioDAO = new UsuarioDAO();
+        this.eventoDAO = new EventoDAO();
 
         setLayout(new BorderLayout(20, 20));
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -49,9 +54,7 @@ public class TelaAdmin extends JPanel {
 
         botaoGerenciarUsuarios.addActionListener(e -> abrirDialogoGerenciarUsuarios());
 
-        botaoGerenciarEventos.addActionListener(e -> {
-            JOptionPane.showMessageDialog(janela, "Esta tela ainda está em construção!", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-        });
+        botaoGerenciarEventos.addActionListener(e -> abrirMenuEventosAdmin());
 
         botaoLogout.addActionListener(e -> {
             janela.setUsuarioLogado(null);
@@ -197,4 +200,162 @@ public class TelaAdmin extends JPanel {
             });
         }
     }
+
+    private void abrirMenuEventosAdmin() {
+        String[] opcoes = {
+                "1 - Listar Todos os Eventos",
+                "2 - Editar Evento",
+                "3 - Excluir Evento",
+                "0 - Voltar"
+        };
+
+        while (true) {
+            String escolha = (String) JOptionPane.showInputDialog(
+                    this,
+                    "Escolha uma opção:",
+                    "Menu de Eventos (Admin)",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    opcoes,
+                    opcoes[0]);
+
+            if (escolha == null || escolha.startsWith("0")) break;
+
+            switch (escolha.charAt(0)) {
+                case '1':
+                    listarTodosEventos();
+                    break;
+                case '2':
+                    editarEventoAdmin();
+                    break;
+                case '3':
+                    excluirEventoAdmin();
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(this, "Opção inválida.");
+            }
+        }
+    }
+
+    private void listarTodosEventos() {
+        List<Evento> eventos = eventoDAO.listar();
+
+        if (eventos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum evento cadastrado.");
+            return;
+        }
+
+        String[] colunas = {"ID", "Título", "Tipo", "Data", "Usuário"};
+        String[][] dados = new String[eventos.size()][colunas.length];
+
+        for (int i = 0; i < eventos.size(); i++) {
+            Evento e = eventos.get(i);
+            dados[i][0] = String.valueOf(e.getId());
+            dados[i][1] = e.getTitulo();
+            dados[i][2] = e.getTipo();
+            dados[i][3] = new SimpleDateFormat("dd/MM/yyyy").format(e.getData());
+            dados[i][4] = e.getUsuario().getNome();
+        }
+
+        JTable tabela = new JTable(dados, colunas);
+        JScrollPane scrollPane = new JScrollPane(tabela);
+
+        JDialog dialog = new JDialog(janela, "Todos os Eventos", true);
+        dialog.add(scrollPane);
+        dialog.setSize(700, 300);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    }
+
+    private void excluirEventoAdmin() {
+        List<Evento> eventos = eventoDAO.listar();
+
+        if (eventos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum evento encontrado.");
+            return;
+        }
+
+        String[] opcoes = eventos.stream()
+                .map(e -> "ID: " + e.getId() + " - " + e.getTitulo() + " (Usuário: " + e.getUsuario().getNome() + ")")
+                .toArray(String[]::new);
+
+        String selecionado = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecione um evento para excluir:",
+                "Excluir Evento",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opcoes,
+                opcoes[0]
+        );
+
+        if (selecionado == null) return;
+
+        int id = Integer.parseInt(selecionado.split(":")[1].split("-")[0].trim());
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Tem certeza que deseja excluir este evento e todos os dados relacionados?",
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            eventoDAO.excluir(id);
+            JOptionPane.showMessageDialog(this, "Evento excluído com sucesso.");
+        }
+    }
+
+    private void editarEventoAdmin() {
+        List<Evento> eventos = eventoDAO.listar();
+
+        if (eventos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum evento encontrado.");
+            return;
+        }
+
+        String[] opcoes = eventos.stream()
+                .map(e -> "ID: " + e.getId() + " - " + e.getTitulo() + " (Usuário: " + e.getUsuario().getNome() + ")")
+                .toArray(String[]::new);
+
+        String selecionado = (String) JOptionPane.showInputDialog(
+                this,
+                "Selecione um evento para editar:",
+                "Editar Evento",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                opcoes,
+                opcoes[0]
+        );
+
+        if (selecionado == null) return;
+
+        int id = Integer.parseInt(selecionado.split(":")[1].split("-")[0].trim());
+        Evento evento = eventoDAO.buscarPorId(id);
+
+        JPanel painel = new JPanel(new GridLayout(0, 2, 10, 10));
+        JTextField campoTitulo = new JTextField(evento.getTitulo());
+        JTextField campoDescricao = new JTextField(evento.getDescricao());
+        JTextField campoTipo = new JTextField(evento.getTipo());
+        JTextField campoData = new JTextField(new SimpleDateFormat("dd/MM/yyyy").format(evento.getData()));
+
+        painel.add(new JLabel("Título:")); painel.add(campoTitulo);
+        painel.add(new JLabel("Descrição:")); painel.add(campoDescricao);
+        painel.add(new JLabel("Tipo:")); painel.add(campoTipo);
+        painel.add(new JLabel("Data (dd/MM/yyyy):")); painel.add(campoData);
+
+        int resultado = JOptionPane.showConfirmDialog(this, painel, "Editar Evento", JOptionPane.OK_CANCEL_OPTION);
+        if (resultado != JOptionPane.OK_OPTION) return;
+
+        try {
+            evento.setTitulo(campoTitulo.getText());
+            evento.setDescricao(campoDescricao.getText());
+            evento.setTipo(campoTipo.getText());
+            evento.setData(new SimpleDateFormat("dd/MM/yyyy").parse(campoData.getText()));
+            eventoDAO.atualizar(evento);
+            JOptionPane.showMessageDialog(this, "Evento atualizado com sucesso!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
 }
