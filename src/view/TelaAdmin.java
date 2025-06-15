@@ -45,6 +45,11 @@ public class TelaAdmin extends JPanel {
         gbc.gridx = 0; gbc.gridy = 1;
         painelBotoes.add(botaoGerenciarEventos, gbc);
 
+        JButton botaoGerenciarRecursos = new JButton("Gerenciar Recursos dos Eventos");
+        botaoGerenciarRecursos.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        gbc.gridx = 0; gbc.gridy = 2;
+        painelBotoes.add(botaoGerenciarRecursos, gbc);
+
         add(painelBotoes, BorderLayout.CENTER);
 
         JPanel painelLogout = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -55,6 +60,10 @@ public class TelaAdmin extends JPanel {
         botaoGerenciarUsuarios.addActionListener(e -> abrirDialogoGerenciarUsuarios());
 
         botaoGerenciarEventos.addActionListener(e -> abrirMenuEventosAdmin());
+
+        botaoGerenciarRecursos.addActionListener(e -> {
+            janela.getCardLayout().show(janela.getPainelPrincipal(), "recursos");
+        });
 
         botaoLogout.addActionListener(e -> {
             janela.setUsuarioLogado(null);
@@ -356,6 +365,4 @@ public class TelaAdmin extends JPanel {
             JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
 }
