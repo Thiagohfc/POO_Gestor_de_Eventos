@@ -1,13 +1,8 @@
 package view;
 
-import dao.UsuarioDAO;
-import model.Usuario;
-import model.UsuarioComum;
+import dao.*;
+import model.*;
 import util.Criptografia;
-import dao.EventoDAO;
-import model.Evento;
-import dao.EnderecoDAO;
-import model.Endereco;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -29,6 +24,8 @@ public class TelaComum extends JPanel {
     private Criptografia criptografia;
     private EventoDAO objEventoDAO;
     private EnderecoDAO objEnderecoDAO;
+    private RecursoDAO objRecursoDAO;
+    private AtracaoDAO objAtracaoDAO;
 
     public TelaComum(JanelaPrincipal janela) {
         this.janela = janela;
@@ -36,6 +33,8 @@ public class TelaComum extends JPanel {
         this.criptografia = new Criptografia();
         this.objEventoDAO = new EventoDAO();
         this.objEnderecoDAO = new EnderecoDAO();
+        this.objRecursoDAO = new RecursoDAO();
+        this.objAtracaoDAO = new AtracaoDAO();
 
         setLayout(new BorderLayout(20, 20));
         setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -109,7 +108,7 @@ public class TelaComum extends JPanel {
 
     private void abrirMenuEventos() {
         String[] opcoes = {
-                "1 - Inserir Evento",
+                "1 - Criar Evento",
                 "2 - Editar Evento",
                 "3 - Excluir Evento",
                 "4 - Listar Meus Eventos",
@@ -148,12 +147,14 @@ public class TelaComum extends JPanel {
     }
 
     private void inserirEvento() {
+        // Verifica se o usuário está logado
         Usuario usuarioLogado = janela.getUsuarioLogado();
         if (usuarioLogado == null) {
             JOptionPane.showMessageDialog(this, "Usuário não está logado.");
             return;
         }
 
+        // Form com campos dos dados de evento e endereco
         JPanel painel = new JPanel(new GridLayout(0, 2, 10, 10));
         JTextField campoTitulo = new JTextField();
         JTextField campoDescricao = new JTextField();
@@ -177,7 +178,7 @@ public class TelaComum extends JPanel {
         painel.add(new JLabel("Número:")); painel.add(campoNumero);
         painel.add(new JLabel("Lotação Máxima:")); painel.add(campoLotacao);
 
-        int result = JOptionPane.showConfirmDialog(this, painel, "Inserir Novo Evento", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(this, painel, "Criar Novo Evento", JOptionPane.OK_CANCEL_OPTION);
         if (result != JOptionPane.OK_OPTION) return;
 
         try {
@@ -196,8 +197,10 @@ public class TelaComum extends JPanel {
             evento.setData(data);
             evento.setUsuario(usuarioLogado);
 
+            // Adicionar evento
             objEventoDAO.inserir(evento);
 
+            // Adicionar endereço
             Endereco endereco = new Endereco();
             endereco.setEstado(campoEstado.getText());
             endereco.setCidade(campoCidade.getText());
@@ -207,10 +210,58 @@ public class TelaComum extends JPanel {
             endereco.setEvento(evento);
             objEnderecoDAO.inserir(endereco);
 
-            JOptionPane.showMessageDialog(this, "Evento inserido com sucesso!");
+            // Adicionar recursos
+            while (true) {
+                int opcaoRecurso = JOptionPane.showConfirmDialog(this, "Deseja adicionar um recurso ao evento?", "Recurso", JOptionPane.YES_NO_OPTION);
+                if (opcaoRecurso != JOptionPane.YES_OPTION) break;
+
+                JTextField nome = new JTextField();
+                JTextField qtd = new JTextField();
+                JTextField desc = new JTextField();
+                JPanel painelRecurso = new JPanel(new GridLayout(0, 2, 10, 10));
+                painelRecurso.add(new JLabel("Nome:")); painelRecurso.add(nome);
+                painelRecurso.add(new JLabel("Quantidade:")); painelRecurso.add(qtd);
+                painelRecurso.add(new JLabel("Descrição:")); painelRecurso.add(desc);
+
+                int res = JOptionPane.showConfirmDialog(this, painelRecurso, "Adicionar Recurso", JOptionPane.OK_CANCEL_OPTION);
+                if (res == JOptionPane.OK_OPTION) {
+                    Recurso recurso = new Recurso();
+                    recurso.setNome(nome.getText());
+                    recurso.setQuantidade(Integer.parseInt(qtd.getText()));
+                    recurso.setDescricao(desc.getText());
+                    recurso.setEvento(evento);
+                    objRecursoDAO.inserir(recurso);
+                } else break;
+            }
+
+            // Adicionar atrações
+            while (true) {
+                int opcaoAtracao = JOptionPane.showConfirmDialog(this, "Deseja adicionar uma atração ao evento?", "Atração", JOptionPane.YES_NO_OPTION);
+                if (opcaoAtracao != JOptionPane.YES_OPTION) break;
+
+                JTextField nome = new JTextField();
+                JTextField tipo = new JTextField();
+                JTextField horario = new JTextField();
+                JPanel painelAtracao = new JPanel(new GridLayout(0, 2, 10, 10));
+                painelAtracao.add(new JLabel("Nome:")); painelAtracao.add(nome);
+                painelAtracao.add(new JLabel("Tipo:")); painelAtracao.add(tipo);
+                painelAtracao.add(new JLabel("Horário (hh:mm):")); painelAtracao.add(horario);
+
+                int res = JOptionPane.showConfirmDialog(this, painelAtracao, "Adicionar Atração", JOptionPane.OK_CANCEL_OPTION);
+                if (res == JOptionPane.OK_OPTION) {
+                    Atracao atracao = new Atracao();
+                    atracao.setNome(nome.getText());
+                    atracao.setTipo(tipo.getText());
+                    atracao.setHorario(horario.getText());
+                    atracao.setEvento(evento);
+                    objAtracaoDAO.inserir(atracao);
+                } else break;
+            }
+
+            JOptionPane.showMessageDialog(this, "Evento criado com sucesso!");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao inserir evento: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao criar evento: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
