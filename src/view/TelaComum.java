@@ -183,6 +183,22 @@ public class TelaComum extends JPanel {
 
         try {
             Evento evento = new Evento();
+
+            // Valida se os campos estão preenchidos
+            if (campoTitulo.getText().trim().isEmpty() ||
+                    campoDescricao.getText().trim().isEmpty() ||
+                    campoTipo.getText().trim().isEmpty() ||
+                    campoData.getText().trim().isEmpty() ||
+                    campoEstado.getText().trim().isEmpty() ||
+                    campoCidade.getText().trim().isEmpty() ||
+                    campoRua.getText().trim().isEmpty() ||
+                    campoNumero.getText().trim().isEmpty() ||
+                    campoLotacao.getText().trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(this, "Todos os campos são obrigatórios!", "Erro de validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             evento.setTitulo(campoTitulo.getText());
             evento.setDescricao(campoDescricao.getText());
             evento.setTipo(campoTipo.getText());
@@ -206,7 +222,12 @@ public class TelaComum extends JPanel {
             endereco.setCidade(campoCidade.getText());
             endereco.setRua(campoRua.getText());
             endereco.setNumero(campoNumero.getText());
-            endereco.setLotacao(Integer.parseInt(campoLotacao.getText()));
+            try {
+                endereco.setLotacao(Integer.parseInt(campoLotacao.getText()));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Lotação deve ser um número inteiro válido.", "Erro de validação", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             endereco.setEvento(evento);
             objEnderecoDAO.inserir(endereco);
 
