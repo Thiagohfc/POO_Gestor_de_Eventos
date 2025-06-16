@@ -61,9 +61,14 @@ public class TelaComum extends JPanel {
         gbc.gridy = 1;
         painelBotoes.add(botaoGerenciarEventos, gbc);
 
+        JButton botaoGerenciarAtracao = new JButton("Gerenciar Atrações dos Eventos");
+        botaoGerenciarAtracao.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        gbc.gridx = 0; gbc.gridy = 2;
+        painelBotoes.add(botaoGerenciarAtracao, gbc);
+
         JButton botaoGerenciarRecursos = new JButton("Gerenciar Recursos dos Eventos");
         botaoGerenciarRecursos.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 3;
         painelBotoes.add(botaoGerenciarRecursos, gbc);
 
         add(painelBotoes, BorderLayout.CENTER);
@@ -76,6 +81,10 @@ public class TelaComum extends JPanel {
         botaoMeusDados.addActionListener(e -> abrirDialogoMeusDados());
 
         botaoGerenciarEventos.addActionListener(e -> abrirMenuEventos());
+
+        botaoGerenciarAtracao.addActionListener(e -> {
+            janela.getCardLayout().show(janela.getPainelPrincipal(), "atracoes");
+        });
 
         botaoGerenciarRecursos.addActionListener(e -> {
             janela.getCardLayout().show(janela.getPainelPrincipal(), "recursos");

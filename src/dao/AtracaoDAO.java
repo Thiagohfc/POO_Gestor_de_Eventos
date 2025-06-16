@@ -38,6 +38,7 @@ public class AtracaoDAO implements InterfaceDAO<Atracao> {
                 atracao.setId(rs.getInt("atracoes_id"));
                 atracao.setNome(rs.getString("atracoes_nome"));
                 atracao.setTipo(rs.getString("atracoes_tipo"));
+                atracao.setHorario(rs.getString("atracoes_horario"));
 
                 EventoDAO eventoDAO = new EventoDAO();
                 Evento evento = eventoDAO.buscarPorId(rs.getInt("evento_evento_id"));
