@@ -38,12 +38,14 @@ public class JanelaPrincipal extends JFrame {
         TelaLogin telaLogin = new TelaLogin(this);
         TelaAdmin telaAdmin = new TelaAdmin(this);
         TelaComum telaComum = new TelaComum(this);
+        TelaEndereco telaEndereco = new TelaEndereco(this);
         TelaAtracao telaAtracao = new TelaAtracao(this);
         TelaRecursos telaRecursos = new TelaRecursos(this);
 
         painelPrincipal.add(telaLogin, "login");
         painelPrincipal.add(telaAdmin, "admin");
         painelPrincipal.add(telaComum, "comum");
+        painelPrincipal.add(telaEndereco, "endereco");
         painelPrincipal.add(telaAtracao, "atracoes");
         painelPrincipal.add(telaRecursos, "recursos");
 
